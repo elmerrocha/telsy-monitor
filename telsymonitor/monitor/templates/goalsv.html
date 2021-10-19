@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- CSS Bootstrap and vertical Slider  -->
+		<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<!-- Fontawesome -->
+		<link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+		<!-- Animate -->
+		<link rel="stylesheet" href="{% static 'css/animate.css' %}">
+		<!-- Icon -->
+		<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}">
+		<!-- CSS  -->
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<title>Telsy Hogar</title>
+	</head>
+	<body>
+		<div class="container-fluid p-0 black high-100">
+			<div class="row no-gutters p-0 high-100">
+				<div class="col-12 p-0 my-auto">
+					<!-- Container Interface -->
+					<div class="screen main-medium">
+						<!-- Inner Container -->
+						<div class="container-fluid p-0">
+							<div class="row header no-gutters p-0">
+								<div class="col-9 title">
+									<h1>Detalles</h1>
+								</div>
+								<div class="col-3 navigation d-flex justify-content-end">
+									<a href="javascript:history.back()" class="button square s60 gradient-1 margin-right-20">
+										<div class="icon"><img src="{% static 'images/icons/arrow-left.png' %}"></div>
+									</a>
+									<a class="button circle c60 red">
+										<div class="icon"><img src="{% static 'images/icons/ico-nurse.png' %}"></div>
+									</a>
+								</div>
+							</div>
+							<div class="row justify-content-center">
+								<div class="col-10">
+									<div class="embed-responsive embed-responsive-16by9">
+										<iframe width="560" height="315" id="DetailVid" src="https://www.youtube.com/embed/z8_KtYXqM3M" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Inner -->
+					</div>
+					<!-- End Contenedor -->
+				</div>
+			</div>
+		</div>
+		<!-- Scripts -->
+		<script src="{% static 'js/jquery-3.4.1.slim.min.js'%}"></script>
+		<script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+		<script src="{% static 'js/splide.min.js'%}"></script>
+		<script src="{% static 'js/telsy.js'%}"></script>
+	</body>
+</html>

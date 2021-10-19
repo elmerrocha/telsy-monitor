@@ -1,0 +1,173 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- CSS Bootstrap and vertical Slider  -->
+		<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<!-- Fontawesome -->
+		<link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+		<!-- Animate -->
+		<link href="{% static 'css/animate.css' %}" rel="stylesheet">
+		<!-- Icon -->
+		<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}">
+		<!-- CSS  -->
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<title>Telsy Hogar</title>
+	</head>
+    <body>
+        <div class="container-fluid p-0 black high-100">
+            <div class="row no-gutters p-0 high-100">
+                <div class="col-12 p-0 my-auto">
+                    <!-- Container Interface  -->
+                    <div class="screen main-medium">
+                        <!-- Inner Container -->
+                        <div class="container-fluid p-0">
+                            <div class="row header no-gutters p-0">
+                                <div class="col title d-flex flex-row">
+                                    <div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-data.png' %}"></div>
+                                    <h1>Resultados</h1>
+                                </div>
+                                <div class="col-fifth navigation d-flex justify-content-end">
+                                    <a href="/home/" class="button square s60 gradient-1 margin-right-20">
+                                        <div class="icon"><img src="{% static 'images/icons/ico-nav.png' %}"></div>
+                                    </a>
+                                    <a class="button circle c60 red">
+                                        <div class="icon"><img src="{% static 'images/icons/ico-nurse.png' %}"></div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row main-content no-gutters p-0">
+                                <div class="col-8 h-100 padding-8">
+                                    {% if Pulse != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class=" d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-ekg-2.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Pulso</p>
+                                                <h2 id="Pulse" class="d-inline">{{Pulse}}</h2><p class="d-inline"> bpm</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if SPO2 != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-spo2.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Saturación oxígeno</p>
+                                                <h2 id="SPO2" class="d-inline">{{SPO2}}</h2><p class="d-inline"> %</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if RR != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-resp.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Frec. Respiratoria</p>
+                                                <h2 id="RR" class="d-inline">{{RR}}</h2><p class="d-inline"> bpm</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if Systolic != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-pni.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Presión Sistólica</p>
+                                                <h2 id="Systole" class="d-inline">{{Systolic}}</h2><p class="d-inline"> mmHg</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if Diastolic != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-pni.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Presión Diastólica</p>
+                                                <h2 id="Diastole" class="d-inline">{{Diastolic}}</h2><p class="d-inline"> mmHg</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if MAP != 0 %}
+                                    <div class="card card-data bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-pni.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Presión Media</p>
+                                                <h2 id="Mean" class="d-inline">{{MAP}}</h2><p class="d-inline"> mmHg</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <!-- ECG Graph -->
+                                    {% if ECG != "0" %}
+                                    <div class="card card-data2 bor bor-grey bor-med padding-4 m-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ico my-auto">
+                                                <img src="{% static 'images/icons/ico-ekg.png' %}">
+                                            </div>
+                                            <div class="content my-auto margin-left-10">
+                                                <p>Electrocardiograma</p>
+                                                <p class="small txt-grey-dark"><span>Fecha: </span> {{Date}}</p>
+                                            </div>
+                                        </div>
+                                        <canvas id="canvas" width="473" height="40"></canvas>
+                                    </div>
+                                    {% endif %}
+                                    <p id="ECG" style="visibility: hidden">{{ECG}}</p>
+                                </div>
+                                <div class="col-4 d-flex flex-wrap align-items-end justify-content-center">
+                                    <div class="asistant as-180 margin-bottom-10 my-auto">
+                                        <img class="img-fluid" src="{% static 'images/assistant/assistant-front-smile.png' %}">
+                                    </div>
+                                    <div class="mt-auto">
+                                        <a href="#" onclick="SendVitalSigns()" class="button rectangle r120 green d-flex flex-row  justify-content-between" style="width: 175px;">
+                                            <p class="label txt-white">Continuar</p>
+                                            <div class="icon">
+                                                <img src="{% static 'images/icons/arrow-right-white.png' %}">
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Inner -->
+                        </div>
+                        <!-- End Contenedor -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Scripts -->
+        <script src="{% static 'js/jquery-3.4.1.slim.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/splide.min.js' %}"></script>
+        <script src="{% static 'js/telsy.js' %}"></script>
+    </body>
+</html>
