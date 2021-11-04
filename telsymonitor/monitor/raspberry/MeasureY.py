@@ -45,11 +45,11 @@ try:
             f.close()
             NIBP_Flarg = False
         ##### NIBP End
-        if((Data == b'\x21') and NIBP_Flarg):
-            print(Serial_Read(Data))
-            f=open('./monitor/raspberry/data/NIBP.end','w')
-            f.close()
-            NIBP_Flarg = False
+        # if((Data == b'\x21') and NIBP_Flarg):
+        #     print(Serial_Read(Data))
+        #     f=open('./monitor/raspberry/data/NIBP.end','w')
+        #     f.close()
+        #     NIBP_Flarg = False
 
         CurrentTime = datetime.now() - StartTime
         if((CurrentTime.total_seconds() >= 60) and Time_Flarg):

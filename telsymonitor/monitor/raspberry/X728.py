@@ -1,3 +1,7 @@
+## Fundacion Cardiovascular de Colombia
+## Proyecto Telsy Hogar
+## Ing. Elmer Rocha Jaime
+
 from struct import unpack, pack
 from smbus import SMBus
 

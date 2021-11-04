@@ -1,3 +1,7 @@
+## Fundacion Cardiovascular de Colombia
+## Proyecto Telsy Hogar
+## Ing. Elmer Rocha Jaime
+
 import RPi.GPIO as GPIO
 from time import sleep
 from os import system, popen

@@ -5,6 +5,7 @@ from time import sleep
 from os import getcwd, system
 from pathlib import Path
 TakeNIBP = False
+keyboardFlarg = True
 
 def IsRaspbian():
     CurrentPath = getcwd().replace('\\','/')
@@ -13,6 +14,9 @@ def IsRaspbian():
 if IsRaspbian():
     from monitor.raspberry import WiFi
     from monitor.raspberry.X728 import readCapacity
+    if keyboardFlarg:
+        Popen(['python3', './monitor/raspberry/KeyboardGPIO.py'])
+        keyboardFlarg = False
 def Cancel(request):
     if IsRaspbian():
         Popen(['python3', './monitor/raspberry/MeasureC.py'])
@@ -59,7 +63,12 @@ def Home(request):
             Time = "'"+Data[0]+' '+Data[1].split('.')[0]+"'"
             print(Time)
             if IsRaspbian(): system('date --set '+Time)
-    if IsRaspbian(): return render(request,'home.html',{"BatteryCap":readCapacity()})
+    if IsRaspbian():
+        try:
+            cap:readCapacity()
+        except Exception:
+            cap = 100
+        return render(request,'home.html',{"BatteryCap":cap})
     else: return render(request,'home.html',{"BatteryCap":100})
 
 def Index(request):
