@@ -187,7 +187,7 @@ sudo cp /home/telsy/telsy-monitor/telsy/monitor/static/images/splash.png /usr/sh
 ### Step 3. Create Django key
 You need to create `key.py` file in `/home/telsy/telsy-monitor/telsy/telsy/`:
 ```
-nano /home/telsy/telsy-monitor/telsy/tels/key.py
+nano /home/telsy/telsy-monitor/telsy/telsy/key.py
 ```
 The key is in the Telsy Hogar production manual.
 

@@ -11,7 +11,7 @@ from os import system
 # URI = 'https://github.com/elmerrocha/telsy-monitor.git'
 URI = 'origin'
 LOCAL_VERSION  = getoutput('git rev-parse HEAD')
-REMOTE_VERSION = getoutput("git ls-remote "+ URI +" # HEAD | awk '{print $1}'")
+REMOTE_VERSION = getoutput('git ls-remote origin').split('\t')[0]
 UPDATABLE = LOCAL_VERSION!=REMOTE_VERSION
 
 def update_firmware():
