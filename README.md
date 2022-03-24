@@ -1,131 +1,216 @@
-# Telsy Monitor
+# **Telsy Monitor**
+Telsy Monitor: vital signs monitor firmware of Telsy Hogar monitor
 
-_Telsy Monitor: vital signs monitor firmware_
+## **📋 Requirements**
+This is what is necessary to run the project:
+- [Raspberry Pi 4 Model B 4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
+- [Raspberry Pi OS Lite 32-bit - Debian 11 Bullseye (January 28th 2022)](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/)
+- [Python 3.9.2](https://www.python.org/downloads/release/python-392/)
+- [Django 4.0.3](https://docs.djangoproject.com/en/4.0/releases/4.0.3/)
 
-## Starting 🚀
+Python libraries needed:
+- [wifi](https://pypi.org/project/python-wifi/)
+- [pytz](https://pypi.org/project/pytz/)
+- [smbus](https://pypi.org/project/smbus/)
 
-_Download/clone this repository, place it in the path /home/pi/_
-
-## Requirements 📋
-
-### _This is what is necessary to run the project:_
-
+## **🔧 Raspberry Pi OS Lite Setup**
+### Step 1. Login to the pi over ssh
+The pi is called `telsy` the way to login over ssh is:
 ```
-- Raspberry Pi 4 Model B 4GB
-- Raspberry Pi OS with desktop (Kernel v5.10)
-- Python 3.7.3
-- Django 3.2.8
-- Gedit
-- Unclutter
-- Xscreensaver
+ssh telsy@raspberry.ip
 ```
-### _Python libraries needed:_
+Be sure to adjust the instructions above for the host name that you are using.
 
+### Step 2. Configure startup settings
+Once you remotely connect to the pi over ssh, run the following command:
 ```
-- wifi
-- pytz
+sudo raspi-config
 ```
+From the menu select:
+- 1 System Options
+    - S5 Boot / Auto Login
+        - B2 Console Autologin
+- 2 Display Options
+    - D2 Underscan
+        - No
+- 3 Interface Options
+    - I5 I2C
+        - Yes
+    - I6 Serial Port
+        - Shell
+            - Yes
+        - Hardware
+            - Yes
 
-## Installation 🔧
+Press the `tab` key twice to get to the `Finish` option, then press the enter key.
 
-### _Raspbian OS:_
+When asked to reboot, select `Yes`.
 
+Reconnect after reboot via ssh.
+
+### Step 3. Install minimum GUI components
+Before you can run the Chromium browser on a lite version of Raspberry Pi OS, you will need a minimum set of GUI components to support it.
+
+While remotely logged in to the pi, run the following at the command line:
 ```
 sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install gedit
-sudo apt-get install unclutter
-sudo apt-get install xscreensaver
+```
+```
+sudo apt-get install -y --no-install-recommends xserver-xorg xinit x11-xserver-utils
 ```
 
-### _Python libraries:_
-
+### Step 4. Install Chromium Web browser
+Once the minimum GUI components are in place, you can install the Chromium browser to display a Web site.
 ```
-sudo pip3 install Django==3.2.8
-sudo pip3 install wifi
-sudo pip3 install pytz
-sudo pip install pytz
+sudo apt-get install -y --no-install-recommends chromium-browser
 ```
 
+### Step 5. Install Python pip and git
+Pip is the package installer for Python. You need to use pip to install packages from the Python Package Index.
 
-## Setting ⚙️
-
-### _Enable Serial Port, enable I2C , disable Serial Console and enable Remote GPIO:_
-
+Git is needed too to clone the project.
 ```
-Clic on applications menu button, go to Preferences/Raspberry pi configurations/Interfaces,
-then enable Serial Port, I2C , Remote GPIO, disable Serial Console and restart the system.
+sudo apt-get install -y python3-pip git
 ```
 
-### _Enable UART on Raspbian OS: edit config.txt and add 2 lines_
-
+### Step 6. Install Python libraries
+After install Chromium install all python libraries needed to run the project.
 ```
-sudo gedit /boot/config.txt
-```
-```
-[all]
-enable_uart=1
-dtoverlay=uart2
-```
-```
-sudo gedit /boot/cmdline.txt
-```
-```
-Delete console=tty1
+sudo pip install Django==4.0.3 wifi smbus
 ```
 
-### _Hide pointer: edit lightdm.conf, uncomment xserver-command=X and add -nocursor (line 95)_
+## **🖥️ Kiosk mode setup**
+### Step 1. Create autostart file
+Edit `/home/telsy/.bash_profile` to automatically start the GUI. There's a check for the bash context first, so you don't accidentally start chromium whenever you ssh in.
+```
+nano .bash_profile
+```
+Write the next and save the file.
+```
+if [ -z $DISPLAY ] && [ $(tty) == /dev/tty1 ]
+then
+  startx -- -nocursor >/dev/null 2>&1
+fi
+```
+Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
+### Step 2. Configure chromium browser
+Create `xinitrc` file in `/home/telsy/.xinitrc` to run chromium whenever you run startx.
 ```
-sudo gedit /etc/lightdm/lightdm.conf
+nano .xinitrc
 ```
+Write the next lines and save the file.
 ```
-[Seat:*]
-#type=local
-#pam-service=lightdm
-#pam-autologin-service=lightdm-autologin
-#pam-greeter-service=lightdm-greeter
-#xserver-backend=
-xserver-command=X -nocursor
+#!/usr/bin/env sh
+xset -dpms
+xset s off
+xset s noblank
+
+sh /home/telsy/telsy-monitor/startserver.sh &
+
+chromium-browser http://localhost:8000 \
+  --window-size=801,481 \
+  --window-position=0,0 \
+  --check-for-update-interval=31536000 \
+  --start-fullscreen \
+  --kiosk \
+  --noerrdialogs \
+  --disable-translate \
+  --no-first-run \
+  --no-context-menu \
+  --disable-context-menu \
+  --fast \
+  --fast-start \
+  --disable-infobars \
+  --overscroll-history-navigation=0 \
+  --disable-pinch \
+  --disable-session-crashed-bubble \
+  --disable-sync \
+  --disable-features=TouchpadOverscrollHistoryNavigation
+```
+Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+
+## **⚙️ Change boot image**
+### Step 1. Install Plymouth for changing boot image
+Once you remotely connect to the pi over ssh, run the following command to install `Plymouth` to present a graphic (bootsplash) while the system boot:
+```
+sudo apt-get install -y plymouth plymouth-themes pix-plym-splash
 ```
 
-### _Disable auto-shutdown and kiosk startup: edit autostart_
+### Step 2. Edit the boot config.txt file
+```
+sudo nano /boot/config.txt
+```
+Add the following at the last line:
+```
+disable_splash=1
+```
+Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
+### Step 3. Edit the Plymouth pix.script file
 ```
-sudo gedit /etc/xdg/lxsession/LXDE-pi/autostart
+sudo nano /usr/share/plymouth/themes/pix/pix.script
 ```
+Remove the following (stay at the line to remove and press `Ctrl+K`):
 ```
-@lxpanel --profile LXDE-pi
-@pcmanfm --desktop --profile LXDE-pi
-@xscreensaver -no-splash
-@sh /home/pi/telsy-monitor/startserver.sh
-@sh /home/pi/telsy-monitor/startweb.sh
+message_sprite = Sprite();
+message_sprite.SetPosition(screen_width * 0.1, screen_height * 0.9, 10000);
+
+my_image = Image.Text(text, 1, 1, 1);
+message_sprite.SetImage(my_image);
+```
+Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+
+### Step 4. Edit the cmdline.txt file
+```
+sudo nano /boot/cmdline.txt
+```
+Add this to the end:
+```
+splash quiet plymouth.ignore-serial-consoles logo.nologo vt.global_cursor_default=0
+```
+Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+
+## **🚀 Starting**
+### Step 1. Clone the repository
+Check that the current path is `/home/telsy/` (with `pwd` command), then run the next command line:
+```
+git clone https://github.com/elmerrocha/telsy-monitor.git
 ```
 
-### _Disable sleep mode:_
-
+### Step 2. Put boot image to specific path
+Run the command:
 ```
-Clic on applications menu button, go to Preferences/Screensaver and change mode to "Disable Screen Saver"
+sudo cp /home/telsy/telsy-monitor/telsy/monitor/static/images/splash.png /usr/share/plymouth/themes/pix
 ```
 
-## Built with  🛠️
+### Step 3. Create Django key
+You need to create `key.py` file in `/home/telsy/telsy-monitor/telsy/telsy/`:
+```
+nano /home/telsy/telsy-monitor/telsy/tels/key.py
+```
+The key is in the Telsy Hogar production manual.
 
-* [Django](https://docs.djangoproject.com/en/3.2/) - Web Framework
+### Step 4. Restart
+Put the command line:
+```
+sudo reboot now
+```
+If you followed the steps correctly you should start the Telsy Home interface.
+
+## **🛠️ Built with**
+* [Django](https://docs.djangoproject.com/en/4.0/) - Web Framework
 * [Bootstrap](https://getbootstrap.com/docs/4.6/getting-started/introduction/) - CSS Framework
 * [Fontawesome](https://fontawesome.com/v6.0/icons) - Icons
-* [jQuery](https://api.jquery.com/) - JavaScript API
+* [jQuery](https://api.jquery.com/) - JavaScript AJAX Library
 * [Splide](https://splidejs.com/category/users-guide/) - JavaScript Slider
-* [WiFi](https://pypi.org/project/python-wifi/) - Wifi python library
-* [pytz](https://pypi.org/project/pytz/) - Date/Timezone library
+* [Roboto](https://fonts.google.com/specimen/Roboto) - Google Typographic Fonts
+* [Sweetalert](https://sweetalert.js.org/guides/) - JavaScript popup messages
 
-
-## Autors ✒️
-
+## **✒️ Autors**
 * **Juan Sebastián Barrios** - *Graphic interface* - [s3ba5t1an](https://github.com/s3ba5t1an)
-* **David Vásquez** - *API / Telecentre platform* - [davidvasquezr](https://github.com/davidvasquezr)
+* **David Vásquez** - *Telecentre platform* - [davidvasquezr](https://github.com/davidvasquezr)
 * **Elmer Rocha** - *Monitor firmware* - [elmerrocha](https://github.com/elmerrocha)
 
-
-## License 📄
-
+## **📄 License**
 This project is under the MIT License - look aht the file [LICENSE.md](LICENSE.md) for more details
