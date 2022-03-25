@@ -76,7 +76,7 @@ sudo apt-get install -y python3-pip git
 ### Step 6. Install Python libraries
 After install Chromium install all python libraries needed to run the project.
 ```
-sudo pip install Django==4.0.3 wifi smbus
+sudo pip install Django==4.0.3 wifi smbus pyserial serial
 ```
 
 ## **🖥️ Kiosk mode setup**
