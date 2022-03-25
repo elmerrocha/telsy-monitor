@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v23.03.2022
+Telsy Hogar v25.03.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -24,8 +24,9 @@ def update_firmware():
 
 def update_info():
     ''' Return git version information '''
+    can_update = UPDATABLE and (REMOTE_VERSION[0:10] != 'fatal: una')
     info = {
-            'updatable': UPDATABLE,
+            'updatable': can_update,
             'localVersion': LOCAL_VERSION[0:10],
             'localDate': getoutput('git show -s --format=%ci')[0:10],
             'remoteVersion': REMOTE_VERSION[0:10],

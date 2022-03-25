@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v23.03.2022
+Telsy Hogar v25.03.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -23,19 +23,19 @@ RASPI_PATH = './monitor/raspberry/'
 def is_raspberry_pi_os():
     ''' Return a boolean value if the code is running in Raspberry OS '''
     current_path = getcwd().replace('\\','/')
-    return current_path == '/home/'
+    return current_path[0:6] == '/home/'
 
 if is_raspberry_pi_os():
     from monitor.raspberry import raspberry_wifi
     from monitor.raspberry.geekworm_x728 import read_capacity
     from monitor.raspberry.update import update_firmware
-    if MEMBRANE_KEYBOARD:
-        MEMBRANE_KEYBOARD = False
-        try:
-            with Popen(['python', RASPI_PATH+'keyboard_gpio.py']):
-                pass
-        except CalledProcessError:
-            print(CalledProcessError)
+    # if MEMBRANE_KEYBOARD:
+    #     MEMBRANE_KEYBOARD = False
+    #     try:
+    #         with Popen(['python', RASPI_PATH+'keyboard_gpio.py']):
+    #             pass
+    #     except CalledProcessError:
+    #         print(CalledProcessError)
 
 def cancel_measurement(request):
     ''' Cancel monitor measurement '''
