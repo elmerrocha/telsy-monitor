@@ -19,6 +19,7 @@ def update_firmware():
     ''' Update firmware searching last commit '''
     if UPDATABLE:
         print("Different version")
+        # system('git reset --hard')
         system('git pull origin')
         sleep (5)
     else:
@@ -26,12 +27,11 @@ def update_firmware():
 
 def update_info():
     ''' Return git version information '''
-    can_update = UPDATABLE and (REMOTE_VERSION[0:10] != 'fatal: una')
     info = {
-            'updatable': can_update,
+            'updatable': UPDATABLE,
             'localVersion': LOCAL_VERSION[0:10],
-            'localDate': getoutput('git show -s --format=%cD')[0:20],
+            'localDate': getoutput('git show -s --format=%cD')[0:25],
             'remoteVersion': REMOTE_VERSION[0:10],
-            'remoteDate': getoutput('git log -1 --format=%cD origin')[0:20]
+            'remoteDate': getoutput('git log -1 --format=%cD origin')[0:25]
         }
     return info
