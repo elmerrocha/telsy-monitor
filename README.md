@@ -189,8 +189,13 @@ You need to create `key.py` file in `/home/telsy/telsy-monitor/telsy/telsy/`:
 ```
 nano /home/telsy/telsy-monitor/telsy/telsy/key.py
 ```
-The key is in the Telsy Hogar production manual.
-
+Add the next line to the file:
+```
+def get_key():
+    ''' Django key '''
+    return 'django-insecure-#&g7+gw14^ux1yvk(wxftntu$ui_n&0(f#v_f+@c8l02#^d!5^'
+```
+Save the file pressing `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 ### Step 4. Restart
 Put the command line:
 ```
