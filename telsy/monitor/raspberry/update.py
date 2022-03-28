@@ -9,10 +9,10 @@ from subprocess import getoutput
 from os import system
 from time import sleep
 
-# URI = 'https://github.com/elmerrocha/telsy-monitor.git'
-URI = 'origin'
+URI = 'https://github.com/elmerrocha/telsy-monitor.git'
+# URI = 'origin'
 LOCAL_VERSION  = getoutput('git rev-parse HEAD')
-REMOTE_VERSION = getoutput('git ls-remote origin').split('\t')[0]
+REMOTE_VERSION = getoutput('git ls-remote '+URI).split('\t')[0]
 UPDATABLE = LOCAL_VERSION!=REMOTE_VERSION
 
 def update_firmware():
