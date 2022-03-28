@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.03.2022
+Telsy Hogar v28.03.2022
 Ing. Elmer Rocha Jaime
 '''
 from communication import serial_write
