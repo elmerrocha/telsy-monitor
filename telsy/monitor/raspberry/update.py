@@ -21,7 +21,6 @@ def update_firmware():
         print("Different version")
         # system('git reset --hard')
         system('git pull origin')
-        sleep (5)
     else:
         print('Same version')
 
@@ -35,6 +34,6 @@ def update_info():
             'localVersion': local_version[0:10],
             'localDate': getoutput('git show -s --format=%cD')[0:25],
             'remoteVersion': remote_version[0:10],
-            'remoteDate': getoutput('git log -1 --format=%cD origin')[0:25]
+            'remoteDate': getoutput('git log -n 1 '+remote_version+' --format=%cD')[0:25]
         }
     return info
