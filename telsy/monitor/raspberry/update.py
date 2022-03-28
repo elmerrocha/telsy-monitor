@@ -6,7 +6,8 @@ Ing. Elmer Rocha Jaime
 '''
 
 from subprocess import getoutput
-from os import system, sleep
+from os import system
+from time import sleep
 
 # URI = 'https://github.com/elmerrocha/telsy-monitor.git'
 URI = 'origin'
