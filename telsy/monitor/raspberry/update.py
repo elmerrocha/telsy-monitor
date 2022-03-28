@@ -6,7 +6,7 @@ Ing. Elmer Rocha Jaime
 '''
 
 from subprocess import getoutput
-from os import system
+from os import system, sleep
 
 # URI = 'https://github.com/elmerrocha/telsy-monitor.git'
 URI = 'origin'
@@ -19,6 +19,9 @@ def update_firmware():
     if UPDATABLE:
         print("Different version")
         system('git pull origin')
+        sleep (5)
+        system('sudo shutdown -r now')
+
     else:
         print('Same version')
 
