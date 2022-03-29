@@ -189,7 +189,7 @@ You need to create `key.py` file in `/home/telsy/telsy-monitor/telsy/telsy/`:
 ```
 nano /home/telsy/telsy-monitor/telsy/telsy/key.py
 ```
-Add the next line to the file:
+Add the next to the file:
 ```
 def get_key():
     ''' Django key '''
