@@ -29,9 +29,11 @@ def update_info():
     local_version  = getoutput('git rev-parse HEAD')
     remote_version = getoutput('git ls-remote '+URI).split('\t')[0]
     updatable = local_version!=remote_version
+    can_update = updatable and (remote_version[0:10] != 'fatal: una')
+    print(updatable, can_update)
     system('git fetch --all')
     info = {
-            'updatable': updatable,
+            'updatable': can_update,
             'localVersion': local_version[0:10],
             'localDate': getoutput('git show -s --format=%cD')[0:25],
             'remoteVersion': remote_version[0:10],

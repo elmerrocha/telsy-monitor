@@ -67,6 +67,7 @@ function completeActivity() {
     data: JSON.stringify({id:activityId}),
     headers: {'Authorization':'Bearer '+localStorage.getItem('token')},
     async: false,
+    timeout: 3000,
     success: function() {
       localStorage.removeItem('activityId');
       saveActivities();
@@ -82,8 +83,7 @@ function completeActivity() {
       }).then(function() {
           backHome();
       });
-    },
-    timeout: 5000
+    }
   });
 }
 function createCustomElement(element,elementClass,elementId,content) {
@@ -134,14 +134,14 @@ function getMethod(url) {
   $.ajax({
     url: url,
     async: false,
+    timeout: 3000,
     headers: {'Authorization':'Bearer '+localStorage.getItem('token')},
     success: function(data) {
       result = data;
     },
     error: function(error) {
       console.log(error.status + ': ' + error.statusText + ': ' +error.responseText);
-    },
-    timeout: 5000
+    }
   });
   return result;
 }
@@ -277,6 +277,7 @@ function postMethod(url,dataToSend,successFunction) {
     contentType: 'application/json',
     data: JSON.stringify(dataToSend),
     async: false,
+    timeout: 3000,
     headers: {'Authorization':'Bearer '+localStorage.getItem('token')},
     success: function(data) {
       successFunction();
@@ -291,8 +292,7 @@ function postMethod(url,dataToSend,successFunction) {
       }).then(function() {
           backHome();
       });
-    },
-    timeout: 5000
+    }
   });
 }
 function saveActivities() {
@@ -306,17 +306,19 @@ function updateClock() {
   const day = today.getDate();
   const hour = today.getHours();
   const minute = today.getMinutes();
-  let dataToSend;
+  let dataToSend, serverDay, serverHour, serverMinute;
 
   const data = getMethod(URI+'/welcomemessages/currenttime');
-  const serverDay = parseInt(data.split('T')[0].split('-')[2]);
-  const serverHour = parseInt(data.split('T')[1].split('.')[0].split(':')[0]);
-  const serverMinute = parseInt(data.split('T')[1].split('.')[0].split(':')[1]);
+  if (data) {
+    serverDay = parseInt(data.split('T')[0].split('-')[2]);
+    serverHour = parseInt(data.split('T')[1].split('.')[0].split(':')[0]);
+    serverMinute = parseInt(data.split('T')[1].split('.')[0].split(':')[1]);
+  }
 
   if ((day!=serverDay) || (hour!=serverHour) || (minute!=serverMinute)) {
     dataToSend = data;
   } else {
-    dataToSend = 0;
+    dataToSend = '0';
   }
   document.getElementById('current-time').value = dataToSend;
   document.getElementById('update-time').submit();
@@ -737,6 +739,7 @@ if (CURRENT_FRAME == '/login/') {
       contentType: 'application/json',
       data: JSON.stringify(credentials),
       async: false,
+      timeout: 3000,
       success: function(data) {
         localStorage.setItem('token', data.token);
         window.location.href = '/user/';
@@ -744,8 +747,7 @@ if (CURRENT_FRAME == '/login/') {
       error: function(error) {
         document.getElementById('error-div').className = 'card-dialog shadow d-flex align-items-center';
         console.log(error.status + ': ' + error.statusText + ' ' +error.responseText);
-      },
-      timeout: 5000
+      }
     });
   }
   function showPasswordUser() {
@@ -818,31 +820,40 @@ if (CURRENT_FRAME == '/medicaments/') {
 /* Medicine */
 /**************************************************************************************************/
 if (CURRENT_FRAME == '/medicine/') {
-  const medicineData = getMethod(URI+'/pharmacotherapies/users/'+localStorage.getItem('userId'));
+  let medicineData;
+  try {
+    medicineData = getMethod(URI+'/pharmacotherapies/users/'+localStorage.getItem('userId'));
+  } catch(error) {
+    medicineData = null;
+    console.log(error);
+  }
+  // const medicineData = getMethod(URI+'/pharmacotherapies/users/'+localStorage.getItem('userId'));
   const medicines = document.getElementById('medicine-div');
   let newDiv, newH3, newUl1, newLi, liDosage, newUl2, newLi0, nLi1, nLi2, nLi3, hour, tmpHour;
-  for (let i=0; i<medicineData.length; i++) {
-    newDiv = createCustomElement('div','card padding-10 margin-bottom-20','','');
-    newH3 = createCustomElement('h3','margin-bottom-20','',medicineData[i].drugName);
-    newUl1 = createCustomElement('ul','horizontal margin-bottom-10','','');
-    newLi = createCustomElement('li','label','','Dósis:');
-    liDosage = createCustomElement('li','','',medicineData[i].dosage);
-    newUl2 = createCustomElement('ul','horizontal','','');
-    newLi0 = createCustomElement('li','label','','Horas');
-    nLi1 = createCustomElement('li','','',hourConversion(medicineData[i].hour1));
-    nLi2 = createCustomElement('li','','',hourConversion(medicineData[i].hour2));
-    nLi3 = createCustomElement('li','','',hourConversion(medicineData[i].hour3));
-
-    newUl1.appendChild(newLi);
-    newUl1.appendChild(liDosage);
-    newUl2.appendChild(newLi0);
-    newUl2.appendChild(nLi1);
-    newUl2.appendChild(nLi2);
-    newUl2.appendChild(nLi3);
-    newDiv.appendChild(newH3);
-    newDiv.appendChild(newUl1);
-    newDiv.appendChild(newUl2);
-    medicines.appendChild(newDiv);
+  if(medicineData) {
+    for (let i=0; i<medicineData.length; i++) {
+      newDiv = createCustomElement('div','card padding-10 margin-bottom-20','','');
+      newH3 = createCustomElement('h3','margin-bottom-20','',medicineData[i].drugName);
+      newUl1 = createCustomElement('ul','horizontal margin-bottom-10','','');
+      newLi = createCustomElement('li','label','','Dósis:');
+      liDosage = createCustomElement('li','','',medicineData[i].dosage);
+      newUl2 = createCustomElement('ul','horizontal','','');
+      newLi0 = createCustomElement('li','label','','Horas');
+      nLi1 = createCustomElement('li','','',hourConversion(medicineData[i].hour1));
+      nLi2 = createCustomElement('li','','',hourConversion(medicineData[i].hour2));
+      nLi3 = createCustomElement('li','','',hourConversion(medicineData[i].hour3));
+  
+      newUl1.appendChild(newLi);
+      newUl1.appendChild(liDosage);
+      newUl2.appendChild(newLi0);
+      newUl2.appendChild(nLi1);
+      newUl2.appendChild(nLi2);
+      newUl2.appendChild(nLi3);
+      newDiv.appendChild(newH3);
+      newDiv.appendChild(newUl1);
+      newDiv.appendChild(newUl2);
+      medicines.appendChild(newDiv);
+    }
   }
   function hourConversion(time) {
     if (time == null) {
