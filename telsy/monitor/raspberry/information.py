@@ -29,8 +29,4 @@ def get_information():
         ether = wifi.find('ether ')
         raspberry_ip = wifi[inet+5:netmask]
         raspberry_mac = wifi[ether+6:ether+23]
-        print(raspberry_ip)
-        print(raspberry_mac)
     return {'connection':connection, 'ip':raspberry_ip, 'mac':raspberry_mac}
-
-print(get_information())

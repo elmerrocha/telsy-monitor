@@ -117,8 +117,8 @@ def home(request):
     if is_raspberry_pi_os():
         try:
             cap = read_capacity()
-        except IOError:
-            print(IOError)
+        except OSError:
+            print(OSError)
             cap = 100
     else:
         cap = 100
