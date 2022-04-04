@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.03.2022
+Telsy Hogar v04.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -9,9 +9,9 @@ from datetime import datetime
 from locale import setlocale, LC_ALL
 from pytz import timezone
 
-file = open('./monitor/raspberry/data/data.txt','r', encoding='utf-8')
-ecg_txt = open('./monitor/raspberry/data/ecg.txt','r', encoding='utf-8')
-json_txt = open('./monitor/raspberry/data/data.json','w', encoding='utf-8')
+file = open('./monitor/raspberry/data/data.txt','r')
+ecg_txt = open('./monitor/raspberry/data/ecg.txt','r')
+json_txt = open('./monitor/raspberry/data/data.json','w')
 json_txt.write('{')
 wave = ecg_txt.read()
 ECG_WAVE = wave.rstrip(wave[-1])

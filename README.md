@@ -68,9 +68,9 @@ sudo apt-get install -y --no-install-recommends chromium-browser
 ### Step 5. Install Python pip and git
 Pip is the package installer for Python. You need to use pip to install packages from the Python Package Index.
 
-Git is needed too to clone the project.
+Git is needed too to clone the project and i2c to read the batteries.
 ```
-sudo apt-get install -y python3-pip git
+sudo apt-get install -y python3-pip git i2c-tools
 ```
 
 ### Step 6. Install Python libraries
@@ -127,6 +127,7 @@ chromium-browser http://localhost:8000 \
   --disable-session-crashed-bubble \
   --disable-sync \
   --disable-features=TouchpadOverscrollHistoryNavigation
+
 ```
 Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
@@ -141,9 +142,12 @@ sudo apt-get install -y plymouth plymouth-themes pix-plym-splash
 ```
 sudo nano /boot/config.txt
 ```
-Add the following at the last line:
+Check that `enable_uart=1` is on the last line, otherwise add it.
+
+And add the following at the last line:
 ```
 disable_splash=1
+dtoverlay=uart2
 ```
 Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
@@ -164,6 +168,10 @@ Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 ### Step 4. Edit the cmdline.txt file
 ```
 sudo nano /boot/cmdline.txt
+```
+Remove this:
+```
+console=serial0,115200
 ```
 Add this to the end:
 ```
@@ -194,6 +202,7 @@ Add the next to the file:
 def get_key():
     ''' Django key '''
     return 'django-insecure-#&g7+gw14^ux1yvk(wxftntu$ui_n&0(f#v_f+@c8l02#^d!5^'
+
 ```
 Save the file pressing `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 ### Step 4. Restart

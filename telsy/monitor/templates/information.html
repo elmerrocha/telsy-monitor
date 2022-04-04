@@ -52,6 +52,14 @@
 															<img class="img" style="width: 50%;" src="{% static 'images/telsyhogar.png'%}">
 														</div>
 														<div class="col mt-2 ml-3">
+															{% if connection %}
+																<h4 class="row">Dirección IP:
+																	<code class="d-inline ml-1">{{ip}}</code>
+																</h4>
+																<h4 class="row mb-2">Dirección MAC:
+																	<code class="d-inline ml-1">{{mac}}</code>
+																</h4>
+															{% endif %}
 															{% if localVersion and localDate %}
 																<h4 class="row">Versión:
 																	<code class="d-inline ml-1">{{localVersion}}</code>

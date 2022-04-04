@@ -1,13 +1,12 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.03.2022
+Telsy Hogar v04.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from subprocess import getoutput
 from os import system
-from time import sleep
 
 URI = 'https://github.com/elmerrocha/telsy-monitor.git'
 # URI = 'origin'
@@ -33,10 +32,10 @@ def update_info():
     print(updatable, can_update)
     system('git fetch --all')
     info = {
-            'updatable': can_update,
-            'localVersion': local_version[0:10],
-            'localDate': getoutput('git show -s --format=%cD')[0:25],
-            'remoteVersion': remote_version[0:10],
-            'remoteDate': getoutput('git log -1 --format=%cD origin')[0:25]
-        }
+        'updatable': can_update,
+        'localVersion': local_version[0:10],
+        'localDate': getoutput('git show -s --format=%cD')[0:25],
+        'remoteVersion': remote_version[0:10],
+        'remoteDate': getoutput('git log -1 --format=%cD origin')[0:25]
+    }
     return info

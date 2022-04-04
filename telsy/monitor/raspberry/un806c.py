@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.03.2022
+Telsy Hogar v04.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -80,8 +80,8 @@ def ecg_wave(data):
 
     #Pace & beat flag is BIT 7 & 6 in ECG channel 1 wave, high byte:
     #BIT Description
-    #7   Pace flag（0: false, 1: true)
-    #6   Heart beat flag（0: false, 1: true)
+    #7   Pace flag (0: false, 1: true)
+    #6   Heart beat flag (0: false, 1: true)
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
@@ -115,17 +115,17 @@ def ecg_status(data):
     #Status:
     #BIT     description
     #7:4     Reserved
-    #3       V （1: lead off, 0: lead OK）
-    #2       RA（1: lead off, 0: lead OK）
-    #1       LA（1: lead off, 0: lead OK）
-    #0       LL（1: lead off, 0: lead OK）
+    #3       V  (1: lead off, 0: lead OK)
+    #2       RA (1: lead off, 0: lead OK)
+    #1       LA (1: lead off, 0: lead OK)
+    #0       LL (1: lead off, 0: lead OK)
     #Saturate:
     #BIT     description
     #7:4     Reserved
-    #3       Lead V （1: Saturate, 0: lead OK）
-    #2       Lead III（1: Saturate, 0: lead OK）
-    #1       Lead I（1: Saturate. 0: lead OK）
-    #0       Lead II（1: Saturate 0: lead OK
+    #3       Lead V  (1: Saturate, 0: lead OK)
+    #2       Lead III (1: Saturate, 0: lead OK)
+    #1       Lead I (1: Saturate. 0: lead OK)
+    #0       Lead II (1: Saturate 0: lead OK
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
@@ -291,8 +291,8 @@ def temperature(data):
     #Sensor  status:
     #BIT     description
     #7:2     Reserved
-    #1       Sensor 2 （0 connected, 1 sensor off）
-    #0       Sensor 1 （0 connected, 1 sensor off）
+    #1       Sensor 2  (0 connected, 1 sensor off)
+    #0       Sensor 1  (0 connected, 1 sensor off)
     #TEMP1 & TEMP2 value: short, data range: 0-500.
     #Unit: 0.1C. e.g. 204 mean 20.4C. -100 means invalid.
 
@@ -363,7 +363,7 @@ def spo2(data):
     #4       Search too long flag
     #3:0     Signal strength(0-8, 15 means invalid)
     #PR(pulse rate): short, data range: 0-255BPM, -100 means invalid.
-    #Spo2: data range: 0～100%, -100 means invalid.
+    #Spo2: data range: 0-100% -100 means invalid.
 
     #0x02 : 0000 0010
     #0x04 : 0000 0100

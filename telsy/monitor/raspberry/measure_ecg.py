@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.03.2022
+Telsy Hogar v04.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -19,8 +19,8 @@ gpio.setup(RELAY_PIN, gpio.OUT)
 sleep(5)
 
 serial = Serial('/dev/ttyAMA1', 115200)
-file = open('./monitor/raspberry/data/data.txt','w', encoding='utf-8')
-ecg_txt = open('./monitor/raspberry/data/ecg.txt','w', encoding='utf-8')
+file = open('./monitor/raspberry/data/data.txt','w')
+ecg_txt = open('./monitor/raspberry/data/ecg.txt','w')
 start_time = datetime.now()
 try:
     data = 0

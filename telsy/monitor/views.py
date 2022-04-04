@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.03.2022
+Telsy Hogar v04.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -29,11 +29,11 @@ if is_raspberry_pi_os():
     from monitor.raspberry import raspberry_wifi
     from monitor.raspberry.geekworm_x728 import read_capacity
     from monitor.raspberry.update import update_firmware
+    from monitor.raspberry.information import get_information
     # if MEMBRANE_KEYBOARD:
     #     MEMBRANE_KEYBOARD = False
     #     try:
-    #         with Popen(['python', RASPI_PATH+'keyboard_gpio.py']):
-    #             pass
+    #         open(['python', RASPI_PATH+'keyboard_gpio.py']):
     #     except CalledProcessError:
     #         print(CalledProcessError)
 
@@ -41,8 +41,7 @@ def cancel_measurement(request):
     ''' Cancel monitor measurement '''
     if is_raspberry_pi_os():
         try:
-            with Popen(['python', RASPI_PATH+'measure_cancel.py']):
-                pass
+            Popen(['python', RASPI_PATH+'measure_cancel.py'])
         except CalledProcessError:
             print(CalledProcessError)
     else:
@@ -133,6 +132,9 @@ def information(request):
     ''' Information view '''
     try:
         info = update_info()
+        if is_raspberry_pi_os():
+            information = get_information()
+            info.update(information)
     except CalledProcessError:
         info = {}
         print(CalledProcessError)
@@ -149,14 +151,12 @@ def measuring(request):
     if is_raspberry_pi_os():
         if NIBP_MEASUREMENT:
             try:
-                with Popen(['python', RASPI_PATH+'measure_nibp.py']):
-                    pass
+                Popen(['python', RASPI_PATH+'measure_nibp.py'])
             except CalledProcessError:
                 print(CalledProcessError)
         else:
             try:
-                with Popen(['python', RASPI_PATH+'measure_ecg.py']):
-                    pass
+                Popen(['python', RASPI_PATH+'measure_ecg.py'])
             except CalledProcessError:
                 print(CalledProcessError)
     else:
@@ -213,17 +213,16 @@ def results(request):
     if is_raspberry_pi_os():
         if Path(RASPI_PATH+'data/nibp.end').is_file():
             try:
-                system('rm -f ./monitor/raspberry/data/nibp.end')
+                system('rm -f '+RASPI_PATH+'data/nibp.end')
             except CalledProcessError:
                 print('File could not be deleted',CalledProcessError)
         try:
-            with Popen(['python', RASPI_PATH+'create_json.py']) as pipe:
-                pipe.wait()
+            Popen(['python', RASPI_PATH+'create_json.py']).wait()
             sleep(1.5)
         except CalledProcessError:
             print(CalledProcessError)
     try:
-        with open(RASPI_PATH+'data/data.json', 'r', encoding='utf-8') as file:
+        with open(RASPI_PATH+'data/data.json', 'r') as file:
             results_data = load(file)
     except EnvironmentError:
         print(CalledProcessError)
