@@ -1,5 +1,7 @@
 # **Telsy Monitor**
-Telsy Monitor: vital signs monitor firmware of Telsy Hogar monitor
+Telsy Monitor: vital signs monitor firmware of Telsy Hogar
+
+Copyright (C) 2022  Elmer Eduardo Rocha Jaime, Dirección de Innovación y Desarrollo Tecnológico - Fundación Cardiovascular de Colombia FCV
 
 ## **📋 Requirements**
 This is what is necessary to run the project:
@@ -9,7 +11,7 @@ This is what is necessary to run the project:
 - [Django 4.0.3](https://docs.djangoproject.com/en/4.0/releases/4.0.3/)
 
 Python libraries needed:
-- [wifi](https://pypi.org/project/python-wifi/)
+- [wifi](https://pypi.org/project/wifi/)
 - [pytz](https://pypi.org/project/pytz/)
 - [smbus](https://pypi.org/project/smbus/)
 
@@ -107,7 +109,7 @@ xset s off
 xset s noblank
 
 sh /home/telsy/telsy-monitor/startserver.sh &
-
+sleep 5
 chromium-browser http://localhost:8000 \
   --window-size=801,481 \
   --window-position=0,0 \

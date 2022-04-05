@@ -29,7 +29,6 @@ def update_info():
     remote_version = getoutput('git ls-remote '+URI).split('\t')[0]
     updatable = local_version!=remote_version
     can_update = updatable and (remote_version[0:10] != 'fatal: una')
-    print(updatable, can_update)
     system('git fetch --all')
     info = {
         'updatable': can_update,
