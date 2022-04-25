@@ -1,56 +1,107 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v04.04.2022
+Telsy Hogar v25.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from serial import Serial
-import un806c
+import uart_decoder
 
 serial = Serial('/dev/ttyAMA1', 115200)
+
+def get_length(parameter):
+    ''' Returns the number of bytes to read depending on the type of data '''
+    parameters = {
+        0x01: 2, # Reset
+        0x03: 9, # Post
+        0x04: 5, # Acknowledge
+        0x05: 9, # ECG wave
+        0x06: 5, # ECG status
+        0x07: 7, # HR
+        0x0A: 7, # ARR
+        0x0B: 9, # ST
+        0x10: 4, # RESP wave
+        0x11: 5, # RR
+        0x12: 6, # APNEA
+        0x15: 8, # TEMP
+        0x16: 5, # SPO2 wave
+        0x17: 7, # SPO2 value
+        0x20: 7, # NIBP cuff
+        0x21: 4, # NIBP end
+        0x22: 9, # NIBP result1
+        0x23: 5, # NIBP result2
+        0x24: 8  # NIBP status
+    }
+    return parameters.get(parameter)-1
+
+def get_int(bytes):
+    ''' Converts the data in bytes to integer '''
+    return int.from_bytes(bytes, byteorder='big', signed=False)
+
 def serial_read(serial_data):
     ''' Read the serial data sent by the card '''
-    data = un806c.convert(serial_data)
-    long = un806c.length(data)
+    data = get_int(serial_data)
+    data_length = get_length(data)
     buffer = []
+    response = ''
+    for _ in range(0, data_length):
+        buffer.append(get_int(serial.read()))
 
-    for _ in range(0, long):
-        buffer.append(un806c.convert(serial.read()))
-
-    if data==0x05:
-        response = un806c.ecg_wave(buffer)
-    if data==0x06:
-        response = un806c.ecg_status(buffer)
-    if data==0x07:
-        response = un806c.heart_rate(buffer)
-    if data==0x0A:
-        response = un806c.arrhythmia(buffer)
-    if data==0x0B:
-        response = un806c.st_amplitude(buffer)
-    if data==0x10:
-        response = un806c.respiration_wave(buffer)
-    if data==0x11:
-        response = un806c.respiration_rate(buffer)
-    if data==0x15:
-        response = un806c.temperature(buffer)
-    if data==0x16:
-        response = un806c.spo2_wave(buffer)
-    if data==0x17:
-        response = un806c.spo2(buffer)
-    if data==0x20:
-        response = un806c.nibp_cuff(buffer)
-    if data==0x21:
-        response = un806c.nibp_end(buffer)
-    if data==0x22:
-        response = un806c.nibp_results(buffer)
-    if data==0x23:
-        response = un806c.nibp_pulse_rate(buffer)
+    if data==0x03:
+        response = uart_decoder.post_module(buffer)
+    elif data==0x05:
+        response = uart_decoder.ecg_wave(buffer)
+    elif data==0x06:
+        response = uart_decoder.ecg_status(buffer)
+    elif data==0x07:
+        response = uart_decoder.heart_rate(buffer)
+    elif data==0x0A:
+        response = uart_decoder.arrhythmia(buffer)
+    elif data==0x0B:
+        response = uart_decoder.st_amplitude(buffer)
+    elif data==0x10:
+        response = uart_decoder.respiration_wave(buffer)
+    elif data==0x11:
+        response = uart_decoder.respiration_rate(buffer)
+    elif data==0x12:
+        response = uart_decoder.apnea(buffer)
+    elif data==0x15:
+        response = uart_decoder.temperature(buffer)
+    elif data==0x16:
+        response = uart_decoder.spo2_wave(buffer)
+    elif data==0x17:
+        response = uart_decoder.spo2(buffer)
+    elif data==0x20:
+        response = uart_decoder.nibp_cuff(buffer)
+    elif data==0x21:
+        response = uart_decoder.nibp_end(buffer)
+    elif data==0x22:
+        response = uart_decoder.nibp_results(buffer)
+    elif data==0x23:
+        response = uart_decoder.nibp_pulse_rate(buffer)
+    elif data==0x24:
+        response = uart_decoder.nibp_status(buffer)
 
     return response
 
+    # if data==0x05: return Method.ECG_Wave(buffer)
+    # if data==0x06: return Method.ECG_Status(buffer)
+    # if data==0x07: return Method.Heart_Rate(buffer)
+    # if data==0x0A: return Method.Arrhythmia(buffer)
+    # if data==0x0B: return Method.ST_Amplitude(buffer)
+    # if data==0x10: return Method.Respiration_Wave(buffer)
+    # if data==0x11: return Method.Respiration_Rate(buffer)
+    # if data==0x15: return Method.Temperature(buffer)
+    # if data==0x16: return Method.SPO2_Wave(buffer)
+    # if data==0x17: return Method.SPO2(buffer)
+    # if data==0x20: return Method.NIBP_Cuff(buffer)
+    # if data==0x21: return Method.NIPB_End(buffer)
+    # if data==0x22: return Method.NIBP_Results(buffer)
+    # if data==0x23: return Method.NIBP_PulseRate(buffer)
+
 def serial_write(command):
-    ''' Sends configuration data to the card via serial '''
+    ''' Sends configuration data to the module via serial '''
     commands = {
         0  : [0x01, 0x81], #Reset Acknowledge
         1  : [0x40, 0xC0], #Request POST

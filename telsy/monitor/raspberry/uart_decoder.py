@@ -1,65 +1,64 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v04.04.2022
+Telsy Hogar v25.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
-def length(size):
-    ''' Returns the number of bytes to read depending on the type of data '''
-    length_ = {
-        0x01: 2, # Reset
-        0x03: 9, # Post
-        0x04: 5, # Acknowledge
-        0x05: 9, # ECG wave
-        0x06: 5, # ECG status
-        0x07: 7, # HR
-        0x0A: 7, # ARR
-        0x0B: 9, # ST
-        0x10: 4, # RESP wave
-        0x11: 5, # RR
-        0x12: 6, # APNEA
-        0x15: 8, # TEMP
-        0x16: 5, # SPO2 wave
-        0x17: 7, # SPO2 value
-        0x20: 7, # NIBP cuff
-        0x21: 4, # NIBP end
-        0x22: 9, # NIBP result1
-        0x23: 5, # NIBP result2
-        0x24: 8  # NIBP status
-    }
-    return length_.get(size)-1
+def post_module(data):#0x03
+    ''' Return Power on Self Test information about 806c module '''
+    #data[0] : HEAD
+    #data[1] : POST1
+    #data[2] : POST2
+    #data[3] : Version
+    #data[4] : Module ID 1
+    #data[5] : Module ID 2
+    #data[6] : Module ID 3
+    #data[7] : CHECKSUM
 
-def is_a_parameter(element):
-    ''' Returns boolean value if the input is a parameter '''
-    parameters = [
-        0x01, #Reset
-        0x03, #Post
-        0x04, #Acknowledge
-        0x05, #ECG wave
-        0x06, #ECG status
-        0x07, #HR
-        0x0A, #ARR
-        0x0B, #ST
-        0x10, #RESP wave
-        0x11, #RR
-        0x12, #APNEA
-        0x15, #TEMP
-        0x16, #SPO2 wave
-        0x17, #SPO2 value
-        0x20, #NIBP Cuff
-        0x21, #NIBP end
-        0x22, #NIBP result1
-        0x23, #NIBP result2
-        0x24  #NIBP status
-    ]
-    return convert(element) in parameters
+    #Version: version No. x 10, e.g., 10 means version 1.0.
+    #Module ID1-3: "808".
+    #POST1:
+    #BIT     description
+    #7:5     Reserved
+    #4       Watchdog test: 0:, 1: OK
+    #3       A/D test:  (0: Fail, 1: OK)
+    #2       RAM test:  (0: Fail, 1: OK)
+    #1       ROM test:  (0: Fail, 1: OK)
+    #0       CPU test:  (0: Fail, 1: OK)
+    #POST2:
+    #BIT    description
+    #7:5    Reserved
+    #4      NIBP test:  (0: Fail, 1: OK)
+    #3      SPO2 test:  (0: Fail, 1: OK)
+    #2      TEMP test:  (0: Fail, 1: OK)
+    #1      RESP test:  (0: Fail, 1: OK)
+    #0      ECG test:   (0: Fail, 1: OK)
 
-def convert(data):
-    ''' Converts the data in bytes to integer '''
-    return int.from_bytes(data, byteorder='big', signed=False)
+    #0x01 : 0000 0001
+    #0x02 : 0000 0010
+    #0x04 : 0000 0100
+    #0x08 : 0000 1000
+    #0x10 : 0001 0000
+    #0x20 : 0010 0000
+    #0x7F : 0111 1111
+    #################################################################################
+    cpu_test = (data[1] & 0x01)
+    rom_test = (data[1] & 0x02) >> 1
+    ram_test = (data[1] & 0x04) >> 2
+    ad_test  = (data[1] & 0x08) >> 3
+    watchdog = (data[1] & 0x10) >> 4
+    ecg_test = (data[2] & 0x01)
+    resp_test= (data[2] & 0x02) >> 1
+    temp_test= (data[2] & 0x04) >> 2
+    spo2_test= (data[2] & 0x08) >> 3
+    nibp_test= (data[2] & 0x10) >> 4
+    post_1 = str(cpu_test)+'S'+str(rom_test)+'S'+str(ram_test)+'S'+str(ad_test)+'S'+str(watchdog)
+    post_2 = str(ecg_test)+'S'+str(resp_test)+'S'+str(temp_test)+'S'+str(spo2_test)+'S'+str(nibp_test)
+    #################################################################################
+    return post_1+'*'+post_2
 
-def ecg_wave(data):
+def ecg_wave(data):#0x05
     ''' Returns the waveforms of the ECG signal '''
     #data[0] : HEAD
     #data[1] : ECG channel 1 wave, high byte
@@ -95,17 +94,17 @@ def ecg_wave(data):
     #################################################################################
     # pace_flarg = data[0] & 0x01
     # heart_beate_flarg = data[1] & 0x40
-    ecg1_h =   (data[1] & 0x3F) << 8
-    ecg1_l =  ((data[0] & 0x02)<<6) | (data[2] & 0x7F)
-    # ecg2_h = (((data[0] & 0x04)<<5) | (data[3] & 0x7F)) << 8
-    # ecg2_l =  ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
-    # ecg3_h = (((data[0] & 0x10)<<3) | (data[5] & 0x7F)) << 8
-    # ecg3_l =  ((data[0] & 0x20)<<2) | (data[6] & 0x7F)
-    #################################################################################
     # flargs = str(pace_flarg) + 'S' + str(heart_beate_flarg)
+    ecg1_h =   (data[1] & 0x3F) << 8
+    ecg1_l =  ((data[0] & 0x02) <<6) | (data[2] & 0x7F)
+    # ecg2_h = (((data[0] & 0x04) <<5) | (data[3] & 0x7F)) << 8
+    # ecg2_l =  ((data[0] & 0x08) <<4) | (data[4] & 0x7F)
+    # ecg3_h = (((data[0] & 0x10) <<3) | (data[5] & 0x7F)) << 8
+    # ecg3_l =  ((data[0] & 0x20) <<2) | (data[6] & 0x7F)
+    #################################################################################
     return str(ecg1_h | ecg1_l)
 
-def ecg_status(data):
+def ecg_status(data):#0x06
     ''' Return the lead status of ECG '''
     #data[0] : HEAD
     #data[1] : Status
@@ -115,38 +114,38 @@ def ecg_status(data):
     #Status:
     #BIT     description
     #7:4     Reserved
-    #3       V  (1: lead off, 0: lead OK)
-    #2       RA (1: lead off, 0: lead OK)
-    #1       LA (1: lead off, 0: lead OK)
-    #0       LL (1: lead off, 0: lead OK)
+    #3       V    (1: lead off, 0: lead OK)
+    #2       RA   (1: lead off, 0: lead OK)
+    #1       LA   (1: lead off, 0: lead OK)
+    #0       LL   (1: lead off, 0: lead OK)
     #Saturate:
     #BIT     description
     #7:4     Reserved
-    #3       Lead V  (1: Saturate, 0: lead OK)
+    #3       Lead V   (1: Saturate, 0: lead OK)
     #2       Lead III (1: Saturate, 0: lead OK)
-    #1       Lead I (1: Saturate. 0: lead OK)
-    #0       Lead II (1: Saturate 0: lead OK
+    #1       Lead I   (1: Saturate, 0: lead OK)
+    #0       Lead II  (1: Saturate, 0: lead OK)
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
     #0x04 : 0000 0100
     #0x08 : 0000 1000
     #################################################################################
-    lead_ll = data[1] & 0x01
-    lead_la = data[1] & 0x02
-    lead_ra = data[1] & 0x04
-    lead_v  = data[1] & 0x08
-    lead_ii = data[2] & 0x01
-    lead_i  = data[2] & 0x02
-    lead_iii= data[2] & 0x04
-    lead_v1 = data[2] & 0x08
+    lead_ll = (data[1] & 0x01)
+    lead_la = (data[1] & 0x02) >> 1
+    lead_ra = (data[1] & 0x04) >> 2
+    lead_v  = (data[1] & 0x08) >> 3
+    lead_ii = (data[2] & 0x01)
+    lead_i  = (data[2] & 0x02) >> 1
+    lead_iii= (data[2] & 0x04) >> 2
+    lead_v1 = (data[2] & 0x08) >> 3
+    lead_txt1 = str(lead_ll)+'S'+str(lead_la)+'S'+str(lead_ra)+'S'+str(lead_v)
+    lead_txt2 = str(lead_ii)+'S'+str(lead_i)+'S'+str(lead_iii)+'S'+str(lead_v1)
     #################################################################################
-    lead_txt1 = str(lead_ll) + 'S' + str(lead_la) + 'S' + str(lead_ra) + 'S' + str(lead_v)
-    lead_txt2 = str(lead_ii) + 'S' + str(lead_i) + 'S' + str(lead_iii) + 'S' + str(lead_v1)
-    return lead_txt1 + lead_txt2
+    return lead_txt1+'*'+lead_txt2
 
-def heart_rate(data):
-    ''' Returns the heart rate value '''
+def heart_rate(data):#0x07
+    ''' Returns the heart rate value by ECG '''
     #data[0] : HEAD
     #data[1] : HR high byte
     #data[2] : HR low byte
@@ -154,10 +153,10 @@ def heart_rate(data):
     #data[4] : R pos low byte
     #data[5] : CHECKSUM
 
-    #HR(heart rate): short, data range:
-    #adult/pediatric 0-300BPM, neonate: 0-350BPM, -100 means invalid value.
-    #R pos: QRS position: short, means the QRS wave time,
-    #the unit is 4ms, e.g., 250 mean 1 second before current packet time.
+    #HR(heart rate): short, data range: adult/pediatric 0-300BPM, neonate:
+    #0-350BPM, -100 means invalid value.
+    #R pos: QRS position: short, means the QRS wave time, the unit is 4ms,
+    #e.g., 250 mean 1 second before current packet time.
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
@@ -170,9 +169,9 @@ def heart_rate(data):
     r_h  = (((data[0] & 0x04)<<5) | (data[3] & 0x7F)) << 8
     r_l  =  ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
     #################################################################################
-    return str(hr_h | hr_l) + 'S' + str(r_h | r_l)
+    return str(hr_h | hr_l)+'S'+str(r_h | r_l)
 
-def arrhythmia(data):
+def arrhythmia(data):#0x0A
     ''' Returns an arrhythmia code and the position in time where it occurs '''
     #data[0] : HEAD
     #data[1] : ARR type
@@ -198,8 +197,7 @@ def arrhythmia(data):
     #15: normal QRS
     #16: Noise
     #17: weak signal
-    #ARR position: short, means the arrhythmia event occur time,
-    #the unit is 4ms, e.g., 250 mean 1 second before.
+    #ARR position: short, means the arrhythmia event occur time, the unit is 4ms, e.g., 250 mean 1 second before.
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
@@ -210,10 +208,10 @@ def arrhythmia(data):
     arr_pos_h = (((data[0] & 0x02)<<6) | (data[2] & 0x7F)) << 8
     arr_pos_l =  ((data[0] & 0x04)<<5) | (data[3] & 0x7F)
     #################################################################################
-    return str(arr_type) + 'S' + str(arr_pos_h | arr_pos_l)
+    return str(arr_type)+'S'+str(arr_pos_h | arr_pos_l)
 
-def st_amplitude(data):
-    ''' Returns the amplitude of the three ECG signal channels '''
+def st_amplitude(data):#0x0B
+    ''' Returns the ST amplitude of the three ECG signal channels '''
     #data[0] : HEAD
     #data[1] : ST1 high byte
     #data[2] : ST1 low byte
@@ -238,36 +236,32 @@ def st_amplitude(data):
     st3_h = (((data[0] & 0x10)<<3) | (data[5] & 0x7F)) << 8
     st3_l =  ((data[0] & 0x20)<<2) | (data[6] & 0x7F)
     #################################################################################
-    st1 = str((st1_h | st1_l)/100)
-    st2 = str((st2_h | st2_l)/100)
-    st3 = str((st3_h | st3_l)/100)
-    return st1 + 'S' + st2 + 'S' + st3
+    return str((st1_h | st1_l)/100)+'S'+str((st2_h | st2_l)/100)+'S'+str((st3_h | st3_l)/100)
 
-def respiration_wave(data):
+def respiration_wave(data):#0x10
     ''' Returns the waveform of the respiration '''
     #data[0] : HEAD
     #data[1] : RESP wave
     #data[2] : CHECKSUM
 
-    # RESP wave: data range 0-256, base line is 128.
+    #RESP wave: data range 0-256, base line is 128.
 
     #0x01 : 0000 0001
     #0x7F : 0111 1111
     #################################################################################
-    resp_wave = (((data[0] & 0x01)<<7) | (data[1] & 0x7F))
+    resp_wave = ((data[0] & 0x01)<<7) | (data[1] & 0x7F)
     #################################################################################
     return str(resp_wave)
 
-def respiration_rate(data):
+def respiration_rate(data):#0x11
     ''' Returns the respiration rate value '''
     #data[0] : HEAD
     #data[1] : RR high byte
     #data[2] : RR low byte
     #data[3] : CHECKSUM
 
-    #RR(respiration rate): short, data range:
-    #adult: 0-120BrPM, Pediatric/Neonate 0-150BrPM,
-    #100 means invalid. 0 means apnea.
+    #RR(respiration rate): short, data range: adult: 0-120BrPM,
+    #Pediatric/Neonate 0-150BrPM, 100 means invalid. 0 means apnea.
 
     #0x01 : 0000 0001
     #0x02 : 0000 0010
@@ -278,7 +272,23 @@ def respiration_rate(data):
     #################################################################################
     return str(rr_h | rr_l)
 
-def temperature(data):
+def apnea(data):#0x12
+    ''' Returns apnea alarm '''
+    #data[0] : HEAD
+    #data[1] : Apnea
+    #data[2] : Reserved
+    #data[3] : Reserved
+    #data[4] : CHECKSUM
+
+    #Apnea alarm: 0: false; 1: true;
+
+    #0x01 : 0000 0001
+    #################################################################################
+    apnea_alarm = data[1] & 0x01
+    #################################################################################
+    return str(apnea_alarm)
+
+def temperature(data):#0x15
     ''' Returns the temperature value '''
     #data[0] : HEAD
     #data[1] : Sensor states
@@ -291,8 +301,8 @@ def temperature(data):
     #Sensor  status:
     #BIT     description
     #7:2     Reserved
-    #1       Sensor 2  (0 connected, 1 sensor off)
-    #0       Sensor 1  (0 connected, 1 sensor off)
+    #1       Sensor 2 (0 connected, 1 sensor off）
+    #0       Sensor 1 (0 connected, 1 sensor off）
     #TEMP1 & TEMP2 value: short, data range: 0-500.
     #Unit: 0.1C. e.g. 204 mean 20.4C. -100 means invalid.
 
@@ -303,16 +313,17 @@ def temperature(data):
     #0x10 : 0001 0000
     #0x7F : 0111 1111
     #################################################################################
-    t1_s = data[1] & 0x01
-    t2_s = data[1] & 0x02
+    t1_s = (data[1] & 0x01)
+    t2_s = (data[1] & 0x02) >> 1
     t1_h = (((data[0] & 0x02)<<6) | (data[2] & 0x7F)) << 8
     t1_l =  ((data[0] & 0x04)<<5) | (data[3] & 0x7F)
     t2_h = (((data[0] & 0x08)<<4) | (data[4] & 0x7F)) << 8
     t2_l =  ((data[0] & 0x10)<<3) | (data[5] & 0x7F)
+    status = str(t1_s)+'S'+str(t2_s)
     #################################################################################
-    return str(t1_h | t1_l) + 'S' + str(t2_h | t2_l) + 'S' + str(t1_s) + 'S' + str(t2_s)
+    return str(t1_h | t1_l)+'S'+str(t2_h | t2_l)+'*'+status
 
-def spo2_wave(data):
+def spo2_wave(data):#0x16
     ''' Returns the waveform of the SPO2 signal '''
     #data[0] : HEAD
     #data[1] : SPO2 wave
@@ -322,7 +333,7 @@ def spo2_wave(data):
     #SPO2 wave: unsigned char, data range: 0-255.
     #SPO2 status:
     #BIT     description
-    #7       SPO2 Finger off flag
+    #7       SPO2 finger off flag
     #6       Pulse flag
     #5       Search pulse flag
     #4       SPO2 sensor off flag
@@ -336,18 +347,18 @@ def spo2_wave(data):
     #0x40 : 0100 0000
     #0x7F : 0111 1111
     #################################################################################
-    spo2_wave_ = ((data[0] & 0x01)<<7) | (data[1] & 0x7F)
+    spo2_wave = ((data[0] & 0x01)<<7) | (data[1] & 0x7F)
     bar_graph = data[2] & 0x0F
-    sensor_status = data[2] & 0x10
-    search_flarg = data[2] & 0x20
-    pulse_flarg = data[2] & 0x40
+    sensor_status = (data[2] & 0x10) >> 4
+    search_flarg  = (data[2] & 0x20) >> 5
+    pulse_flarg   = (data[2] & 0x40) >> 6
     finger = data[0] & 0x02
+    spo2_1 = str(spo2_wave)+'S'+str(bar_graph)
+    spo2_2 = str(sensor_status)+'S'+str(search_flarg)+'S'+str(pulse_flarg)+'S'+str(finger)
     #################################################################################
-    status = str(sensor_status)+'S'+'S'+str(finger)
-    flargs = str(search_flarg)+'S'+str(pulse_flarg)
-    return str(spo2_wave_)+'S'+str(bar_graph)+'S'+status+flargs
+    return spo2_1+'*'+spo2_2
 
-def spo2(data):
+def spo2(data):#0x17
     ''' Returns pulse rate and oxygen saturation percentage '''
     #data[0] : HEAD
     #data[1] : Spo2 information
@@ -362,21 +373,30 @@ def spo2(data):
     #5       Spo2 drop flag
     #4       Search too long flag
     #3:0     Signal strength(0-8, 15 means invalid)
+
     #PR(pulse rate): short, data range: 0-255BPM, -100 means invalid.
-    #Spo2: data range: 0-100% -100 means invalid.
+
+    #Spo2: data range: 0～100%, -100 means invalid.
 
     #0x02 : 0000 0010
     #0x04 : 0000 0100
     #0x08 : 0000 1000
+    #0x0F : 0000 1111
+    #0x10 : 0001 0000
+    #0x20 : 0010 0000
     #0x7F : 0111 1111
     #################################################################################
+    # signal = (data[1] & 0x0F)
+    # search = (data[1] & 0x10) >> 4
+    # drop   = (data[1] & 0x20) >> 5
+    # information = str(signal)+'S'+str(search)+'S'+str(drop)
     pr_h = (((data[0] & 0x02)<<6) | (data[2] & 0x7F)) << 8
     pr_l =  ((data[0] & 0x04)<<5) | (data[3] & 0x7F)
-    spo2_=  ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
+    spo2 =  ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
     #################################################################################
-    return str(spo2_) + 'S' + str(pr_h | pr_l)
+    return str(spo2)+'S'+str(pr_h | pr_l)
 
-def nibp_cuff(data):
+def nibp_cuff(data):#0x20
     ''' Returns current cuff pressure '''
     #data[0] : HEAD
     #data[1] : Cuff high byte
@@ -386,9 +406,12 @@ def nibp_cuff(data):
     #data[5] : CHECKSUM
 
     #Cuff pressure: short, data range: 0-300mmHg, -100 means invalid.
+
     #NIBP Cuff type wrong flag:
     #0: OK; 1: wrong type of Cuff used.
+
     #Host should stop NIBP measure when received this flag.
+
     #NIBP measure mode:
     #1: manual mode;
     #2: auto mode;
@@ -405,12 +428,12 @@ def nibp_cuff(data):
     wrong_flag = data[3] & 0x01
     measure_mode = data[3] & 0x7F
     #################################################################################
-    return str(cuff_h | cuff_l) + 'S' + str(wrong_flag) + 'S' + str(measure_mode)
+    return str(cuff_h | cuff_l)+'S'+str(wrong_flag)+'S'+str(measure_mode)
 
-def nibp_end(data):
+def nibp_end(data):#0x21
     ''' Returns end mode of blood pressure measure '''
     #data[0] : HEAD
-    #data[1] : Data
+    #data[1] : data
     #data[2] : CHECKSUM
 
     #NIBP end mode:
@@ -425,7 +448,7 @@ def nibp_end(data):
     #0x7F : 0111 1111
     return ((data[0] & 0x01)<<7) | (data[1] & 0x7F)
 
-def nibp_results(data):
+def nibp_results(data):#0x22
     ''' Returns the NIBP results (systolic, diastolic and mean pressure) '''
     #data[0] : HEAD
     #data[1] : Systolic high byte
@@ -446,17 +469,17 @@ def nibp_results(data):
     #0x20 : 0010 0000
     #0x7F : 0111 1111
     #################################################################################
-    sys_h =  (((data[0] & 0x01)<<7) | (data[1] & 0x7F)) << 8
-    sys_l =   ((data[0] & 0x02)<<6) | (data[2] & 0x7F)
-    dia_h =  (((data[0] & 0x04)<<5) | (data[3] & 0x7F)) << 8
-    dia_l =   ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
+    sys_h  = (((data[0] & 0x01)<<7) | (data[1] & 0x7F)) << 8
+    sys_l  =  ((data[0] & 0x02)<<6) | (data[2] & 0x7F)
+    dia_h  = (((data[0] & 0x04)<<5) | (data[3] & 0x7F)) << 8
+    dia_l  =  ((data[0] & 0x08)<<4) | (data[4] & 0x7F)
     mead_h = (((data[0] & 0x10)<<3) | (data[5] & 0x7F)) << 8
     mead_l =  ((data[0] & 0x20)<<2) | (data[6] & 0x7F)
     #################################################################################
-    return str(sys_h | sys_l) + 'S' + str(dia_h | dia_l) + 'S' + str(mead_h | mead_l)
+    return str(sys_h | sys_l)+'S'+str(dia_h | dia_l)+'S'+str(mead_h | mead_l)
 
-def nibp_pulse_rate(data):
-    ''' Returns the heart rate value by NIBP '''
+def nibp_pulse_rate(data):#0x23
+    ''' Returns the pulse rate value by NIBP '''
     #data[0] : HEAD
     #data[1] : PR high byte
     #data[2] : PR low byte
@@ -472,3 +495,74 @@ def nibp_pulse_rate(data):
     pr_l =  ((data[0] & 0x02)<<6) | (data[2] & 0x7F)
     #################################################################################
     return str(pr_h | pr_l)
+
+def nibp_status(data):#0x24
+    ''' Returns the NIBP measurement information '''
+    #data[0] : HEAD
+    #data[1] : NIBP status
+    #data[2] : NIBP auto period
+    #data[3] : Error code
+    #data[4] : Next measure time high
+    #data[5] : Next measure time low
+    #data[6] : CHECKSUM
+
+    #NIBP status:
+    #BIT    description
+    #7:6    Reserved
+    #5:4    Patient type, 00: adult; 01: pediatric, 02: neonate.
+    #3:0    0: NIBP reset OK;
+    #1      manual mode;
+    #2      manual mode;
+    #3      STAT mode;
+    #4      calibration;
+    #5      pneumatic;
+    #6      NIBP resetting;
+    #10     error, details see Error code.
+
+    #NIBP auto period:
+    #0: manual mode;             8: 30 minute in auto mode;
+    #1: 1 minute in auto mode;   9: 1 hour in auto mode;
+    #2: 1 minute in auto mode;   10: 1.5 hour in auto mode;
+    #3: 3 minute in auto mode;   11: 2 hour in auto mode;
+    #4: 4 minute in auto mode;   12: 3 hour in auto mode;
+    #5: 5 minute in auto mode;   13: 4 hour in auto mode;
+    #6: 10 minute in auto mode;  14: 8 hour in auto mode;
+    #7: 15 minute in auto mode;  15: STAT mode.
+
+    #NIBP error code:
+    #Code    Description
+    #0       No error
+    #1       Cuff loose
+    #2       Leakage
+    #3       Pressure wrong
+    #4       Weak signal
+    #5       Data range error
+    #6       Arm movement
+    #7       Over pressure
+    #8       Signal saturate
+    #9       Pneumatic test fail
+    #10      Fatal error
+    #11      Over time
+
+    #NIBP next measure time: short, unit: second.
+
+    #0x01 : 0000 0001
+    #0x02 : 0000 0010
+    #0x04 : 0000 0100
+    #0x08 : 0000 1000
+    #0x0F : 0000 1111
+    #0x10 : 0001 0000
+    #0x20 : 0010 0000
+    #0X30 : 0011 0000
+    #0x40 : 0100 0000
+    #0x7F : 0111 1111
+    #################################################################################
+    nibp_status  = (data[1] & 0x0F)
+    patient_type = (data[1] & 0x30) >> 4
+    auto_period  = (data[2] & 0x0F)
+    error_code   = (data[3] & 0x0F)
+    next_measure_h = ((data[0] & 0x08)<<4) | (data[4] & 0x7F) << 8
+    next_measure_l = ((data[0] & 0x10)<<3) | (data[5] & 0x7F)
+    status = str(nibp_status)+'S'+str(patient_type)+'S'+str(auto_period)+str(error_code)
+    #################################################################################
+    return str(next_measure_h | next_measure_l)+'*'+status

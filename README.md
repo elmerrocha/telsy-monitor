@@ -1,5 +1,5 @@
 # **Telsy Monitor**
-Telsy Monitor: vital signs monitor firmware of Telsy Hogar
+Vital signs monitor firmware of Telsy Hogar
 
 Copyright (C) 2022  Elmer Eduardo Rocha Jaime, Dirección de Innovación y Desarrollo Tecnológico - Fundación Cardiovascular de Colombia FCV
 
@@ -78,7 +78,7 @@ sudo apt-get install -y python3-pip git i2c-tools
 ### Step 6. Install Python libraries
 After install Chromium install all python libraries needed to run the project.
 ```
-sudo pip install Django==4.0.3 wifi smbus pyserial serial
+sudo pip install Django==4.0.3 wifi smbus pyserial RPi.GPIO pytz
 ```
 
 ## **🖥️ Kiosk mode setup**
@@ -229,4 +229,4 @@ If you followed the steps correctly you should start the Telsy Home interface.
 * **Elmer Rocha** - *Monitor firmware* - [elmerrocha](https://github.com/elmerrocha)
 
 ## **📄 License**
-This project is under the MIT License - look aht the file [LICENSE.md](LICENSE.md) for more details
+This project is under the GNU AGPLv3 License - look aht the file [LICENSE.md](LICENSE.md) for more details

@@ -6,21 +6,12 @@ Ing. Elmer Rocha Jaime
 '''
 
 from datetime import datetime
-from time import sleep
 from uart_io import serial_read, serial_write
 from serial import Serial
-import RPi.GPIO as gpio
-
-#Relay enabler
-RELAY_PIN = 10 #GPIO10
-gpio.setwarnings(False)
-gpio.setmode(gpio.BCM)
-gpio.setup(RELAY_PIN, gpio.OUT)
-sleep(5)
 
 serial = Serial('/dev/ttyAMA1', 115200)
-file = open('./monitor/raspberry/data/data.txt','w')
-ecg_txt = open('./monitor/raspberry/data/ecg.txt','w')
+spo2_txt = open('spo2_data.txt', 'w')
+info = open('spo2_info.txt', 'w')
 start_time = datetime.now()
 try:
     data = 0
@@ -32,31 +23,33 @@ try:
             serial_write(1)
             start_time = datetime.now()
 
-        # ECG Wave
-        if data==b'\x05':
-            ecg_txt.write(serial_read(data)+',')
-        # Respiration rate
-        if data==b'\x11':
-            file.write('RR,'+serial_read(data)+'\n')
+        # Temperature
+        if data==b'\x15':
+            info.write('### Temperature ###\n')
+            info.write(serial_read(data)+'\n')
+        # SPO2 Wave
+        elif data==b'\x16':
+            tmp = serial_read(data)
+            spo2_txt.write(tmp.split('*')[0].split('S')[0]+'\n')
+            info.write('### SPO2 Wave ###\n')
+            info.write(tmp.split('*')[1]+'\n')
         # SPO2
-        if data==b'\x17':
-            file.write('SPO2,'+serial_read(data)+'\n')
+        elif data==b'\x17':
+            info.write('### SPO2 ###\n')
+            info.write(serial_read(data)+'\n')
 
         current_time = datetime.now() - start_time
         if current_time.total_seconds() >= 60:
             break
     serial.close()
-    file.close()
-    ecg_txt.close()
-    gpio.cleanup()
+    info.close()
+    spo2_txt.close()
 except KeyboardInterrupt:
     serial.close()
-    file.close()
-    ecg_txt.close()
-    gpio.cleanup()
+    info.close()
+    spo2_txt.close()
 except OSError:
     print(OSError)
     serial.close()
-    file.close()
-    ecg_txt.close()
-    gpio.cleanup()
+    info.close()
+    spo2_txt.close()

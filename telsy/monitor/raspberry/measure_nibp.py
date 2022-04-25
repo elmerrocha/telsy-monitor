@@ -1,13 +1,13 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v04.04.2022
+Telsy Hogar v25.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from datetime import datetime
 from time import sleep
-from communication import serial_read, serial_write
+from uart_io import serial_read, serial_write
 from serial import Serial
 import RPi.GPIO as gpio
 
