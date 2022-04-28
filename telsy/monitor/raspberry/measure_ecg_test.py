@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.04.2022
+Telsy Hogar v28.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -10,9 +10,9 @@ from uart_io import serial_read, serial_write
 from serial import Serial
 
 serial = Serial('/dev/ttyAMA1', 115200)
-info = open('ecg_info.txt', 'w')
-ecg_txt = open('ecg_data.txt', 'w')
-rr_txt = open('rr_data.txt', 'w')
+info = open('./test/ecg_info.txt', 'w')
+ecg_txt = open('./test/ecg_data.txt', 'w')
+rr_txt = open('./test/rr_data.txt', 'w')
 start_time = datetime.now()
 try:
     data = 0

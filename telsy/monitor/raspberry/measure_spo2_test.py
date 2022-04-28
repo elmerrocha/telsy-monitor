@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.04.2022
+Telsy Hogar v28.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -10,8 +10,8 @@ from uart_io import serial_read, serial_write
 from serial import Serial
 
 serial = Serial('/dev/ttyAMA1', 115200)
-spo2_txt = open('spo2_data.txt', 'w')
-info = open('spo2_info.txt', 'w')
+spo2_txt = open('./test/spo2_data.txt', 'w')
+info = open('./test/spo2_info.txt', 'w')
 start_time = datetime.now()
 try:
     data = 0
@@ -31,8 +31,6 @@ try:
         elif data==b'\x16':
             tmp = serial_read(data)
             spo2_txt.write(tmp.split('*')[0].split('S')[0]+'\n')
-            info.write('### SPO2 Wave ###\n')
-            info.write(tmp.split('*')[1]+'\n')
         # SPO2
         elif data==b'\x17':
             info.write('### SPO2 ###\n')

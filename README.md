@@ -6,43 +6,98 @@ Copyright (C) 2022  Elmer Eduardo Rocha Jaime, Dirección de Innovación y Desar
 ## **📋 Requirements**
 This is what is necessary to run the project:
 - [Raspberry Pi 4 Model B 4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
-- [Raspberry Pi OS Lite 32-bit - Debian 11 Bullseye (January 28th 2022)](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/)
-- [Python 3.9.2](https://www.python.org/downloads/release/python-392/)
-- [Django 4.0.3](https://docs.djangoproject.com/en/4.0/releases/4.0.3/)
+- [Raspberry Pi OS with desktop - Debian 10 Buster (May 7th 2021)](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-05-28/)
+- [Python 3.7.3](https://www.python.org/downloads/release/python-373/)
+- [Django 3.2.13](https://docs.djangoproject.com/en/4.0/releases/3.2.13/)
 
 Python libraries needed:
 - [wifi](https://pypi.org/project/wifi/)
 - [pytz](https://pypi.org/project/pytz/)
 - [smbus](https://pypi.org/project/smbus/)
+- [pyserial](https://pypi.org/project/pyserial/)
+- [RPi.GPIO](https://pypi.org/project/RPi.GPIO/)
 
-## **🔧 Raspberry Pi OS Lite Setup**
-### Step 1. Login to the pi over ssh
-The pi is called `telsy` the way to login over ssh is:
+## **💾 Raspberry Pi OS installation on microSD**
+These installation instructions are written for the Windows 10 operating system.
+
+It's necessary a microSD with more than 8 GB and a SD Adapter or a microSD USB adapter.
+
+
+### Step 1. Download the [Raspberry Pi Imager program](https://www.raspberrypi.com/software/) and install it
+
+![Download Raspberry Pi Imager](/telsy/monitor/static/images/installation/download_raspberry_pi_imager.png)
+
+### Step 2. Download the OS image
+Scroll down in the [page](https://www.raspberrypi.com/software/) and go to [See all download options](https://www.raspberrypi.com/software/operating-systems/), in the Operating system images section go to `Raspberry Pi OS with desktop` and click on [Archive](https://downloads.raspberrypi.org/raspios_armhf/images/).
+
+![Archive Raspberry Pi OS with desktop](/telsy/monitor/static/images/installation/raspberry_pi_os_with_desktop.png)
+
+In archive page select `raspios_armhf-2021-05-28`, once there download the `2021-05-07-raspios-buster-armhf.zip` file.
+
+![2021-05-07-raspios-buster-armhf](/telsy/monitor/static/images/installation/2021-05-07-raspios-buster-armhf.png)
+
+### Step 3. Setup Raspberry Pi Imager
+At the Raspberry Pi Imager program click on `CHOOSE OS` button, now go to `Use custom`, there select the OS image file downloaded (2021-05-07-raspios-buster-armhf.zip).
+
+![Use custom OS image](/telsy/monitor/static/images/installation/use_custom_image.png)
+
+Now select the microSD clicking on `CHOOSE STORAGE`, after press the gear (⚙️) button, in the _Set hostname:_ write **monitor**, select `Enable SSH`.
+
+![Setup Hostname](/telsy/monitor/static/images/installation/setup_hostname.png)
+
+Now select `Set username and password`, in _Username_ write **telsy** and create a password. Configure wireless LAN or connect the Raspberry Pi 4 to Internet by Ethernet.
+
+![Setup username](/telsy/monitor/static/images/installation/setup_username.png)
+
+If you configured a Wireless LAN network select **CO** in `Wireless LAN country`, press in `Set locale settings` select **America/Bogota** and **latam** in `Keyboard layout`. Then press `SAVE` button.
+
+![Setup locale and time zone](/telsy/monitor/static/images/installation/setup_locale.png)
+
+After all press `WRITE` button to start the microSD writing.
+
+### Step 4. Start Raspberry Pi OS
+
+First put the microSD in the Raspberry Pi 4, connect the touchscreen or screen and  power the board. If you configured wireless LAN connection you have to look for the Raspberry Pi IP by the name `monitor`.
+
+## **🔧 Raspberry Pi OS Setup**
+
+### Step 1. Welcome to Raspberry Pi
+When you power the Raspberry Pi board for the first time you see the window called _Welcome to Raspberry Pi_ press Next to start the setup.
+
+![Welcome to Raspberry Pi 1](/telsy/monitor/static/images/installation/welcome_to_raspberry_1.png)
+
+At the `Set Country` part in _Country_ select **Colombia** and press _Next_. After that it will ask to change password press _Next_ to skip this step. Then if you have a trouble with black border in the screen select _This screen shows a black border around the desktop_ and press _Next_, skip the WiFi network configuration if the Raspberry Pi board is connected to internet already.
+
+After all you will see the _Update Software_ it's recommended update it and reboot after it has finished.
+
+### Step 2. Login to the Raspberry over SSH
+The pi user is called `telsy`, so the way to login over ssh is:
 ```
 ssh telsy@raspberry.ip
 ```
-Be sure to adjust the instructions above for the host name that you are using.
+The program will ask you for a ED25 key fingerprint, so you have to write *yes* and continue writing the user password.
 
-### Step 2. Configure startup settings
+![SSH Fingerprint](/telsy/monitor/static/images/installation/fingerprint.png)
+
+### Step 3. Configure interfaces settings
 Once you remotely connect to the pi over ssh, run the following command:
 ```
 sudo raspi-config
 ```
+
+![Raspi Config](/telsy/monitor/static/images/installation/raspi_config.png)
+
 From the menu select:
-- 1 System Options
-    - S5 Boot / Auto Login
-        - B2 Console Autologin
-- 2 Display Options
-    - D2 Underscan
-        - No
 - 3 Interface Options
-    - I5 I2C
+    - P5 I2C
         - Yes
-    - I6 Serial Port
+    - P6 Serial Port
         - Shell
-            - Yes
+            - No
         - Hardware
             - Yes
+
+![Serial interface](/telsy/monitor/static/images/installation/serial_interface.png)
 
 Press the `tab` key twice to get to the `Finish` option, then press the enter key.
 
@@ -50,110 +105,52 @@ When asked to reboot, select `Yes`.
 
 Reconnect after reboot via ssh.
 
-### Step 3. Install minimum GUI components
-Before you can run the Chromium browser on a lite version of Raspberry Pi OS, you will need a minimum set of GUI components to support it.
-
+### Step 4. Install some components and Python libraries
 While remotely logged in to the pi, run the following at the command line:
 ```
 sudo apt-get update
 ```
 ```
-sudo apt-get install -y --no-install-recommends xserver-xorg xinit x11-xserver-utils
+sudo apt-get install -y xscreensaver plymouth plymouth-themes pix-plym-splash
+```
+```
+sudo pip3 install Django==3.2.13 wifi smbus pyserial RPi.GPIO pytz
 ```
 
-### Step 4. Install Chromium Web browser
-Once the minimum GUI components are in place, you can install the Chromium browser to display a Web site.
-```
-sudo apt-get install -y --no-install-recommends chromium-browser
-```
-
-### Step 5. Install Python pip and git
-Pip is the package installer for Python. You need to use pip to install packages from the Python Package Index.
-
-Git is needed too to clone the project and i2c to read the batteries.
-```
-sudo apt-get install -y python3-pip git i2c-tools
-```
-
-### Step 6. Install Python libraries
-After install Chromium install all python libraries needed to run the project.
-```
-sudo pip install Django==4.0.3 wifi smbus pyserial RPi.GPIO pytz
-```
-
-## **🖥️ Kiosk mode setup**
-### Step 1. Create autostart file
-Edit `/home/telsy/.bash_profile` to automatically start the GUI. There's a check for the bash context first, so you don't accidentally start chromium whenever you ssh in.
-```
-nano .bash_profile
-```
-Write the next and save the file.
-```
-if [ -z $DISPLAY ] && [ $(tty) == /dev/tty1 ]
-then
-  startx -- -nocursor >/dev/null 2>&1
-fi
-```
-Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
-
-### Step 2. Configure chromium browser
-Create `xinitrc` file in `/home/telsy/.xinitrc` to run chromium whenever you run startx.
-```
-nano .xinitrc
-```
-Write the next lines and save the file.
-```
-#!/usr/bin/env sh
-xset -dpms
-xset s off
-xset s noblank
-
-sh /home/telsy/telsy-monitor/startserver.sh &
-sleep 5
-chromium-browser http://localhost:8000 \
-  --window-size=801,481 \
-  --window-position=0,0 \
-  --check-for-update-interval=31536000 \
-  --start-fullscreen \
-  --kiosk \
-  --noerrdialogs \
-  --disable-translate \
-  --no-first-run \
-  --no-context-menu \
-  --disable-context-menu \
-  --fast \
-  --fast-start \
-  --disable-infobars \
-  --overscroll-history-navigation=0 \
-  --disable-pinch \
-  --disable-session-crashed-bubble \
-  --disable-sync \
-  --disable-features=TouchpadOverscrollHistoryNavigation
-
-```
-Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
-
-## **⚙️ Change boot image**
-### Step 1. Install Plymouth for changing boot image
-Once you remotely connect to the pi over ssh, run the following command to install `Plymouth` to present a graphic (bootsplash) while the system boot:
-```
-sudo apt-get install -y plymouth plymouth-themes pix-plym-splash
-```
-
-### Step 2. Edit the boot config.txt file
+### Step 5. Edit the boot config.txt file
 ```
 sudo nano /boot/config.txt
 ```
 Check that `enable_uart=1` is on the last line, otherwise add it.
 
-And add the following at the last line:
+And add the following at the last line (the shortcut to paste is `Shift + Insert`):
 ```
 disable_splash=1
 dtoverlay=uart2
+avoid_warnings=1
 ```
+The last lines should look like this:
+
+![Config.txt](/telsy/monitor/static/images/installation/config_txt.png)
+
 Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
-### Step 3. Edit the Plymouth pix.script file
+### Step 6. Edit the cmdline.txt file
+```
+sudo nano /boot/cmdline.txt
+```
+Remove this (if exists):
+```
+console=serial0,115200
+```
+Add this to the end:
+```
+logo.nologo vt.global_cursor_default=0
+```
+
+## **⚙️ Change boot image**
+
+### Step 1. Edit the Plymouth pix.script file
 ```
 sudo nano /usr/share/plymouth/themes/pix/pix.script
 ```
@@ -167,19 +164,15 @@ message_sprite.SetImage(my_image);
 ```
 Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
-### Step 4. Edit the cmdline.txt file
+The last lines should look like this:
+
+![Plymouth pix script](/telsy/monitor/static/images/installation/plymouth.png)
+
+### Step 2. Restart
+Put the command line:
 ```
-sudo nano /boot/cmdline.txt
+sudo reboot
 ```
-Remove this:
-```
-console=serial0,115200
-```
-Add this to the end:
-```
-splash quiet plymouth.ignore-serial-consoles logo.nologo vt.global_cursor_default=0
-```
-Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
 
 ## **🚀 Starting**
 ### Step 1. Clone the repository
@@ -207,10 +200,57 @@ def get_key():
 
 ```
 Save the file pressing `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
-### Step 4. Restart
+
+
+### Step 4. Change wallpaper and desktop size
+Right click on the desktop go to `Desktop preferences`, then go to _Defaults_ tab and press **Set Defaults** button in front of _For small screens_.
+
+![Set defaults for small screens](/telsy/monitor/static/images/installation/set_defaults_small_screens.png)
+
+Then go back to _Desktop_ tab, deselect _Wastbasket_, and now press `temple.jpg` in front of _Picture_ and select **splash.jpg** in the path _/home/telsy/telsy-monitor/telsy/monitor/static/images_.
+
+![Splash wallpaper](/telsy/monitor/static/images/installation/splash_wallpaper.png)
+
+Now go to _Menu Bar_ tab and press the box in front of _Colour_, then in _Pick a Color_ window press the dropper button, and select whe color of the wallpaper, you will se the color code `#E8E9EE`, then press OK.
+
+![Pick a color](/telsy/monitor/static/images/installation/pick_a_color.png)
+
+### Step 5. Hide pointer
 Put the command line:
 ```
-sudo reboot now
+sudo nano /etc/lightdm/lightdm.conf
+```
+Go to the 95 line, uncomment it and add -nocursor:
+```
+xserver-command=X -nocursor
+```
+It should look like this:
+![Lightdm.conf](/telsy/monitor/static/images/installation/lightdm_conf.png)
+
+### Step 6. Configure kiosk startup
+Put the command line:
+```
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+```
+Comment (add #) to _@lxpanel --profile LXDE-pi_ and add this to the last lines:
+```
+@sh /home/telsy/telsy-monitor/startserver.sh
+@sh /home/telsy/telsy-monitor/startweb.sh
+```
+It should look like this:
+![Autostart settings](/telsy/monitor/static/images/installation/autostart.png)
+
+
+### Step 7. Disable sleep mode
+Go to main menu (Raspberry Pi icon), then Preferences, then **Screensaver**, now change _Mode_ to **Disable Screen Saver** and close the window:
+
+![Screensaver](/telsy/monitor/static/images/installation/screensaver.png)
+
+
+### Step 8. Restart
+Put the command line:
+```
+sudo reboot
 ```
 If you followed the steps correctly you should start the Telsy Home interface.
 

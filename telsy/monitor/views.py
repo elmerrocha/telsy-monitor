@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.04.2022
+Telsy Hogar v28.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -33,7 +33,7 @@ if is_raspberry_pi_os():
     # if MEMBRANE_KEYBOARD:
     #     MEMBRANE_KEYBOARD = False
     #     try:
-    #         open(['python', RASPI_PATH+'keyboard_gpio.py']):
+    #         open(['python3', RASPI_PATH+'keyboard_gpio.py']):
     #     except CalledProcessError:
     #         print(CalledProcessError)
 
@@ -41,7 +41,7 @@ def cancel_measurement(request):
     ''' Cancel monitor measurement '''
     if is_raspberry_pi_os():
         try:
-            Popen(['python', RASPI_PATH+'measure_cancel.py'])
+            Popen(['python3', RASPI_PATH+'measure_cancel.py'])
         except CalledProcessError:
             print(CalledProcessError)
     else:
@@ -151,12 +151,12 @@ def measuring(request):
     if is_raspberry_pi_os():
         if NIBP_MEASUREMENT:
             try:
-                Popen(['python', RASPI_PATH+'measure_nibp.py'])
+                Popen(['python3', RASPI_PATH+'measure_nibp.py'])
             except CalledProcessError:
                 print(CalledProcessError)
         else:
             try:
-                Popen(['python', RASPI_PATH+'measure_ecg.py'])
+                Popen(['python3', RASPI_PATH+'measure_ecg.py'])
             except CalledProcessError:
                 print(CalledProcessError)
     else:
@@ -217,7 +217,7 @@ def results(request):
             except CalledProcessError:
                 print('File could not be deleted',CalledProcessError)
         try:
-            Popen(['python', RASPI_PATH+'create_json.py']).wait()
+            Popen(['python3', RASPI_PATH+'create_json.py']).wait()
             sleep(1.5)
         except CalledProcessError:
             print(CalledProcessError)

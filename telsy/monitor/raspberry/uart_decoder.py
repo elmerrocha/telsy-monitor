@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.04.2022
+Telsy Hogar v28.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -53,10 +53,15 @@ def post_module(data):#0x03
     temp_test= (data[2] & 0x04) >> 2
     spo2_test= (data[2] & 0x08) >> 3
     nibp_test= (data[2] & 0x10) >> 4
+    version  = (data[3] & 0x7F)
+    module_1 = (data[4] & 0x7F)
+    module_2 = (data[5] & 0x7F)
+    module_3 = (data[6] & 0x7F)
+    module_id = str(module_1)+'-'+str(module_2)+'-'+str(module_3)
     post_1 = str(cpu_test)+'S'+str(rom_test)+'S'+str(ram_test)+'S'+str(ad_test)+'S'+str(watchdog)
     post_2 = str(ecg_test)+'S'+str(resp_test)+'S'+str(temp_test)+'S'+str(spo2_test)+'S'+str(nibp_test)
     #################################################################################
-    return post_1+'*'+post_2
+    return post_1+'*'+post_2+'*'+str(version)+module_id
 
 def ecg_wave(data):#0x05
     ''' Returns the waveforms of the ECG signal '''
@@ -301,8 +306,8 @@ def temperature(data):#0x15
     #Sensor  status:
     #BIT     description
     #7:2     Reserved
-    #1       Sensor 2 (0 connected, 1 sensor off）
-    #0       Sensor 1 (0 connected, 1 sensor off）
+    #1       Sensor 2 (0 connected, 1 sensor off)
+    #0       Sensor 1 (0 connected, 1 sensor off)
     #TEMP1 & TEMP2 value: short, data range: 0-500.
     #Unit: 0.1C. e.g. 204 mean 20.4C. -100 means invalid.
 
@@ -319,9 +324,20 @@ def temperature(data):#0x15
     t1_l =  ((data[0] & 0x04)<<5) | (data[3] & 0x7F)
     t2_h = (((data[0] & 0x08)<<4) | (data[4] & 0x7F)) << 8
     t2_l =  ((data[0] & 0x10)<<3) | (data[5] & 0x7F)
+    #################################################################################
+    t1 = 0
+    t2 = 0
+    if (t1_h | t1_l)>0xFF:
+        t1 = t1_l
+    else:
+        t1 = t1_h | t1_l
+    if (t2_h | t2_l)>0xFF:
+        t2 = t2_l
+    else:
+        t2 = t2_h | t2_l
     status = str(t1_s)+'S'+str(t2_s)
     #################################################################################
-    return str(t1_h | t1_l)+'S'+str(t2_h | t2_l)+'*'+status
+    return str(t1/10)+'S'+str(t2/10)+'*'+status
 
 def spo2_wave(data):#0x16
     ''' Returns the waveform of the SPO2 signal '''
