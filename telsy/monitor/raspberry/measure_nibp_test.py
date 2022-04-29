@@ -1,11 +1,12 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v28.04.2022
+Telsy Hogar v29.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from datetime import datetime
+from time import sleep
 from uart_io import serial_read, serial_write
 from serial import Serial
 
@@ -18,8 +19,8 @@ try:
         data_ = data
         data = serial.read()
         if ((data_==b'\x01') and (data==b'\x81')):
-            serial_write(0)
-            serial_write(1)
+            serial_write(100)
+            sleep(0.5)
             serial_write(35)
             start_time = datetime.now()
 

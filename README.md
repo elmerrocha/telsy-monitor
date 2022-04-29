@@ -28,11 +28,11 @@ It's necessary a microSD with more than 8 GB and a SD Adapter or a microSD USB a
 ![Download Raspberry Pi Imager](/telsy/monitor/static/images/installation/download_raspberry_pi_imager.png)
 
 ### Step 2. Download the OS image
-Scroll down in the [page](https://www.raspberrypi.com/software/) and go to [See all download options](https://www.raspberrypi.com/software/operating-systems/), in the Operating system images section go to `Raspberry Pi OS with desktop` and click on [Archive](https://downloads.raspberrypi.org/raspios_armhf/images/).
+Scroll down in the [page](https://www.raspberrypi.com/software/) and go to [See all download options](https://www.raspberrypi.com/software/operating-systems/), in the Operating system images section go to [`Raspberry Pi OS with desktop`](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit) and click on [Archive](https://downloads.raspberrypi.org/raspios_armhf/images/).
 
 ![Archive Raspberry Pi OS with desktop](/telsy/monitor/static/images/installation/raspberry_pi_os_with_desktop.png)
 
-In archive page select `raspios_armhf-2021-05-28`, once there download the `2021-05-07-raspios-buster-armhf.zip` file.
+In archive page select [`raspios_armhf-2021-05-28`](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-05-28/), once there download the [`2021-05-07-raspios-buster-armhf.zip`](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-05-28/2021-05-07-raspios-buster-armhf.zip) file.
 
 ![2021-05-07-raspios-buster-armhf](/telsy/monitor/static/images/installation/2021-05-07-raspios-buster-armhf.png)
 
@@ -228,6 +228,7 @@ Go to the 95 line, uncomment it and add -nocursor:
 xserver-command=X -nocursor
 ```
 It should look like this:
+
 ![Lightdm.conf](/telsy/monitor/static/images/installation/lightdm_conf.png)
 
 ### Step 6. Configure kiosk startup
@@ -241,6 +242,7 @@ Comment (add #) to _@lxpanel --profile LXDE-pi_ and add this to the last lines:
 @sh /home/telsy/telsy-monitor/startweb.sh
 ```
 It should look like this:
+
 ![Autostart settings](/telsy/monitor/static/images/installation/autostart.png)
 
 
@@ -272,4 +274,4 @@ If you followed the steps correctly you should start the Telsy Home interface.
 * **Elmer Rocha** - *Monitor firmware* - [elmerrocha](https://github.com/elmerrocha)
 
 ## **📄 License**
-This project is under the GNU AGPLv3 License - look aht the file [LICENSE.md](LICENSE.md) for more details
+This project is under the GNU AGPLv3 License - look at the file [LICENSE.md](LICENSE.md) for more details

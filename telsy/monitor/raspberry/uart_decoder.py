@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v28.04.2022
+Telsy Hogar v29.04.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -324,20 +324,20 @@ def temperature(data):#0x15
     t1_l =  ((data[0] & 0x04)<<5) | (data[3] & 0x7F)
     t2_h = (((data[0] & 0x08)<<4) | (data[4] & 0x7F)) << 8
     t2_l =  ((data[0] & 0x10)<<3) | (data[5] & 0x7F)
-    #################################################################################
-    t1 = 0
-    t2 = 0
-    if (t1_h | t1_l)>0xFF:
-        t1 = t1_l
-    else:
-        t1 = t1_h | t1_l
-    if (t2_h | t2_l)>0xFF:
-        t2 = t2_l
-    else:
-        t2 = t2_h | t2_l
     status = str(t1_s)+'S'+str(t2_s)
     #################################################################################
-    return str(t1/10)+'S'+str(t2/10)+'*'+status
+    # t1 = 0
+    # t2 = 0
+    # if (t1_h | t1_l)>0xFF:
+    #     t1 = t1_l
+    # else:
+    #     t1 = t1_h | t1_l
+    # if (t2_h | t2_l)>0xFF:
+    #     t2 = t2_l
+    # else:
+    #     t2 = t2_h | t2_l
+    #################################################################################
+    return str((t1_h | t1_l)/10)+'S'+str((t2_h | t2_l)/10)+'*'+status
 
 def spo2_wave(data):#0x16
     ''' Returns the waveform of the SPO2 signal '''
