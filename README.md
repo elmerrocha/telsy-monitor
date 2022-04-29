@@ -114,6 +114,9 @@ sudo apt-get update
 sudo apt-get install -y xscreensaver plymouth plymouth-themes pix-plym-splash
 ```
 ```
+sudo apt-get remove -y lxplug-ptbatt
+```
+```
 sudo pip3 install Django==3.2.13 wifi smbus pyserial RPi.GPIO pytz
 ```
 
