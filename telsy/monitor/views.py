@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v29.04.2022
+Telsy Hogar v09.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -30,12 +30,12 @@ if is_raspberry_pi_os():
     from monitor.raspberry.geekworm_x728 import read_capacity
     from monitor.raspberry.update import update_firmware
     from monitor.raspberry.information import get_information
-    # if MEMBRANE_KEYBOARD:
-    #     MEMBRANE_KEYBOARD = False
-    #     try:
-    #         open(['python3', RASPI_PATH+'keyboard_gpio.py']):
-    #     except CalledProcessError:
-    #         print(CalledProcessError)
+    if MEMBRANE_KEYBOARD:
+        MEMBRANE_KEYBOARD = False
+        try:
+            open(['python3', RASPI_PATH+'keyboard_gpio.py'])
+        except CalledProcessError:
+            print(CalledProcessError)
 
 def cancel_measurement(request):
     ''' Cancel monitor measurement '''
