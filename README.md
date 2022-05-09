@@ -7,10 +7,10 @@ Copyright (C) 2022  Elmer Eduardo Rocha Jaime, Dirección de Innovación y Desar
 - [📋 Requirements](#-requirements)
 - [💾 Raspberry Pi OS Installation](#-raspberry-pi-os-installation-on-microsd)
 - [🔧 Raspberry Pi OS Setup](#-raspberry-pi-os-setup)
-- [⚙️ Change boot image](#-change-boot-image)
+- [⚙️ Change boot image](#%EF%B8%8F-change-boot-image)
 - [🚀 Starting](#-starting)
-- [🛠️ Built with](#-built-with)
-- [✒️ Autors](#-autors)
+- [🛠️ Built with](#%EF%B8%8F-built-with)
+- [✒️ Autors](#%EF%B8%8F-autors)
 - [📄 License](#-license)
 
 ## **📋 Requirements**
