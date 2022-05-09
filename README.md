@@ -4,14 +4,14 @@ Vital signs monitor firmware of Telsy Hogar
 Copyright (C) 2022  Elmer Eduardo Rocha Jaime, Dirección de Innovación y Desarrollo Tecnológico - Fundación Cardiovascular de Colombia FCV
 
 ## **📑 Menu**
-- [📋 Requirements](#📋-requirements)
-- [💾 Raspberry Pi OS Installation](#💾-raspberry-pi-os-installation-on-microsd)
-- [🔧 Raspberry Pi OS Setup](#🔧-raspberry-pi-os-setup)
-- [⚙️ Change boot image](#⚙️-change-boot-image)
-- [🚀 Starting](#🚀-starting)
-- [🛠️ Built with](#🛠️-built-with)
-- [✒️ Autors](#✒️-autors)
-- [📄 License](#📄-license)
+- [📋 Requirements](#-requirements)
+- [💾 Raspberry Pi OS Installation](#-raspberry-pi-os-installation-on-microsd)
+- [🔧 Raspberry Pi OS Setup](#-raspberry-pi-os-setup)
+- [⚙️ Change boot image](#-change-boot-image)
+- [🚀 Starting](#-starting)
+- [🛠️ Built with](#-built-with)
+- [✒️ Autors](#-autors)
+- [📄 License](#-license)
 
 ## **📋 Requirements**
 This is what is necessary to run the project:
