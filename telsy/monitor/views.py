@@ -33,7 +33,7 @@ if is_raspberry_pi_os():
     if MEMBRANE_KEYBOARD:
         MEMBRANE_KEYBOARD = False
         try:
-            open(['python3', RASPI_PATH+'keyboard_gpio.py'])
+            Popen(['python3', RASPI_PATH+'keyboard_gpio.py'])
         except CalledProcessError:
             print(CalledProcessError)
 
