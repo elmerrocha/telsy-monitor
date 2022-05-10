@@ -146,7 +146,7 @@ The last lines should look like this:
 
 ![Config.txt](/telsy/monitor/static/images/installation/config_txt.png)
 
-Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+Press <kbd>Ctrl+O</kbd>, then press <kbd>Enter</kbd> and press <kbd>Ctrl+X</kbd>.
 
 ### Step 6. Edit the cmdline.txt file
 ```
@@ -175,7 +175,7 @@ message_sprite.SetPosition(screen_width * 0.1, screen_height * 0.9, 10000);
 my_image = Image.Text(text, 1, 1, 1);
 message_sprite.SetImage(my_image);
 ```
-Press `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+Press <kbd>Ctrl+O</kbd>, then press <kbd>Enter</kbd> and press <kbd>Ctrl+X</kbd>.
 
 The last lines should look like this:
 
@@ -206,13 +206,13 @@ You need to create `key.py` file in `/home/telsy/telsy-monitor/telsy/telsy/`:
 nano /home/telsy/telsy-monitor/telsy/telsy/key.py
 ```
 Add the next to the file:
-```
+```python
 def get_key():
     ''' Django key '''
     return 'django-insecure-#&g7+gw14^ux1yvk(wxftntu$ui_n&0(f#v_f+@c8l02#^d!5^'
 
 ```
-Save the file pressing `Ctrl+O`, then press `Enter` and press `Ctrl+X`.
+Save the file pressing <kbd>Ctrl+O</kbd>, then press <kbd>Enter</kbd> and press <kbd>Ctrl+X</kbd>.
 
 
 ### Step 4. Change wallpaper and desktop size

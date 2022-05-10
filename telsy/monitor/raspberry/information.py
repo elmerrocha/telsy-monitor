@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v09.05.2022
+Telsy Hogar v10.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -25,12 +25,6 @@ def get_information():
         ether = ethernet.find('ether ')
         raspberry_mac = ethernet[ether+6:ether+23]
         raspberry_ip = ethernet[inet+5:netmask]
-    elif gprs_4g.find('inet ') > 0:
-        type = 'gprs'
-        connection = True
-        inet = ethernet.find('inet ')
-        netmask = ethernet.find('  netmask')
-        raspberry_ip = ethernet[inet+5:netmask]
     elif wifi.find('inet ') > 0:
         type = 'wifi'
         connection = True
@@ -39,4 +33,10 @@ def get_information():
         ether = wifi.find('ether ')
         raspberry_ip = wifi[inet+5:netmask]
         raspberry_mac = wifi[ether+6:ether+23]
+    elif gprs_4g.find('inet ') > 0:
+        type = 'gprs'
+        connection = True
+        inet = ethernet.find('inet ')
+        netmask = ethernet.find('  netmask')
+        raspberry_ip = ethernet[inet+5:netmask]
     return {'type':type, 'connection':connection, 'ip':raspberry_ip, 'mac':raspberry_mac}
