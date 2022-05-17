@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v10.05.2022
+Telsy Hogar v17.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -147,7 +147,7 @@ def serial_write(command):
         56 : [0x5D, 0xDD], #NIBP STAT: Continuous NIBP measurement during 5 minutes
         57 : [0x5E, 0xDE]  #Request NIBP result: Last NIBP result
     }
-    default_commands = [0, 1, 36, 11, 20, 30, 53]
+    default_commands = [0, 1, 11, 20, 30, 53]
     if command==100:
         for default_cmd in default_commands:
             for cmd in range(0, len(commands.get(default_cmd))):

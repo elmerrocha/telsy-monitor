@@ -267,7 +267,7 @@ Put the command line:
 ```
 sudo reboot
 ```
-If you followed the steps correctly you should start the Telsy Home interface.
+If you followed the steps correctly you should see the Telsy Home interface.
 
 ## **🛠️ Built with**
 * [Django](https://docs.djangoproject.com/en/4.0/) - Web Framework
