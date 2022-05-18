@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v17.05.2022
+Telsy Hogar v18.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -31,7 +31,7 @@ try:
         data = serial.read()
         if ((data_==b'\x01') and (data==b'\x81')):
             serial_write(100)
-            sleep(0.5)
+            sleep(1)
             serial_write(35)
             start_time = datetime.now()
 
@@ -62,8 +62,8 @@ except KeyboardInterrupt:
     file.close()
     ecg_txt.close()
     gpio.cleanup()
-except OSError:
-    print(OSError)
+except OSError as err:
+    print(err)
     serial.close()
     file.close()
     ecg_txt.close()

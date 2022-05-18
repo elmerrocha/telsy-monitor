@@ -2073,7 +2073,7 @@ div[data-anim~=base] {
   font-family: "Font Awesome 5 Free";
   font-size: 50px;
   font-weight: 900;
-  color: var(--color-blue-light);
+  color: var(--color-green);
   transform: rotate(0.75turn);
   content: "\f240";
 }
@@ -2112,6 +2112,14 @@ div[data-anim~=base] {
   color: var(--color-red);
   transform: rotate(0.75turn);
   content: "\f244"
+}
+
+.fa-charging-station{
+  font-family: "Font Awesome 5 Free";
+  font-size: 50px;
+  font-weight: 900;
+  color: var(--color-blue-light);
+  content: "\f5e7"
 }
 
 /*Copia del estilo .row de bootstrap-grid*/

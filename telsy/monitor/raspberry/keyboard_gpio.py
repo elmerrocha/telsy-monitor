@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v17.05.2022
+Telsy Hogar v18.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -60,8 +60,8 @@ except KeyboardInterrupt:
     system('xinput enable '+xid)
     system('bash -c "echo 255 > '+BACKLIGHT_PATH+'"')
     gpio.cleanup()
-except OSError:
-    print(OSError)
+except OSError as exc:
+    print(exc)
     system('xinput enable '+xid)
     system('bash -c "echo 255 > '+BACKLIGHT_PATH+'"')
     gpio.cleanup()

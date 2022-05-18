@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v17.05.2022
+Telsy Hogar v18.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -34,16 +34,16 @@ if is_raspberry_pi_os():
         MEMBRANE_KEYBOARD = False
         try:
             Popen(['python3', RASPI_PATH+'keyboard_gpio.py'])
-        except CalledProcessError:
-            print(CalledProcessError)
+        except CalledProcessError as exc:
+            print(exc)
 
 def cancel_measurement(request):
     ''' Cancel monitor measurement '''
     if is_raspberry_pi_os():
         try:
             Popen(['python3', RASPI_PATH+'measure_cancel.py'])
-        except CalledProcessError:
-            print(CalledProcessError)
+        except CalledProcessError as exc:
+            print(exc)
     else:
         print('Cancel measurement')
     return render(request, 'cancel.html')
@@ -55,8 +55,8 @@ def connected(request):
     if is_raspberry_pi_os():
         try:
             raspberry_wifi.connect(network_ssid,password)
-        except CalledProcessError:
-            print(CalledProcessError)
+        except CalledProcessError as exc:
+            print(exc)
             return render(request, 'menu.html')
     else:
         print('SSID:',network_ssid,'Password:',password)
@@ -117,11 +117,11 @@ def home(request):
     if is_raspberry_pi_os():
         try:
             cap = read_capacity()
-        except OSError:
-            print(OSError)
+        except OSError as exc:
+            print(exc)
             cap = 100
     else:
-        cap = 100
+        cap = 120
     return render(request,'home.html', {'batteryCapacity': cap})
 
 def index(request):
@@ -135,9 +135,9 @@ def information(request):
         if is_raspberry_pi_os():
             information = get_information()
             info.update(information)
-    except CalledProcessError:
+    except CalledProcessError as exc:
         info = {}
-        print(CalledProcessError)
+        print(exc)
     return render(request,'information.html',info)
 
 def login(request):
@@ -152,13 +152,13 @@ def measuring(request):
         if NIBP_MEASUREMENT:
             try:
                 Popen(['python3', RASPI_PATH+'measure_nibp.py'])
-            except CalledProcessError:
-                print(CalledProcessError)
+            except CalledProcessError as exc:
+                print(exc)
         else:
             try:
                 Popen(['python3', RASPI_PATH+'measure_ecg.py'])
-            except CalledProcessError:
-                print(CalledProcessError)
+            except CalledProcessError as exc:
+                print(exc)
     else:
         if NIBP_MEASUREMENT:
             print('Monitor will measure NIBP')
@@ -199,8 +199,8 @@ def network(request):
     if is_raspberry_pi_os():
         try:
             networks = raspberry_wifi.scan()
-        except IOError:
-            print(IOError)
+        except IOError as exc:
+            print(exc)
             return render(request, 'network.html')
     else:
         networks = ['Red 0', 'Red A', 'Red B', 'Red C', 'Red 4']
@@ -214,18 +214,18 @@ def results(request):
         if Path(RASPI_PATH+'data/nibp.end').is_file():
             try:
                 system('rm -f '+RASPI_PATH+'data/nibp.end')
-            except CalledProcessError:
-                print('File could not be deleted',CalledProcessError)
+            except CalledProcessError as exc:
+                print('File could not be deleted',exc)
         try:
             Popen(['python3', RASPI_PATH+'create_json.py']).wait()
             sleep(1.5)
-        except CalledProcessError:
-            print(CalledProcessError)
+        except CalledProcessError as exc:
+            print(exc)
     try:
         with open(RASPI_PATH+'data/data.json', 'r') as file:
             results_data = load(file)
-    except EnvironmentError:
-        print(CalledProcessError)
+    except EnvironmentError as exc:
+        print(exc)
         results_data = {'RR':0,'SPO2':0,'Pulse':0,'Systolic':0,
         'Diastolic':0,'MAP':0,'Date':'','ECG':'0'}
     return render(request,'results.html', results_data)

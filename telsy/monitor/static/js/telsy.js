@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 // Fundacion Cardiovascular de Colombia
 // Proyecto Telsy
-// Telsy Hogar v17.05.2022
+// Telsy Hogar v18.05.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
@@ -609,7 +609,8 @@ if (CURRENT_FRAME == '/home/') {
       'fa-battery-half', //40 <= % < 60
       'fa-battery-three-quarters', //60 <= & < 80
       'fa-battery-full', //% > 80
-      'fa-battery-full' //% == 100
+      'fa-battery-full', //% == 100
+      'fa-charging-station' //charge
     ];
     battery.className = classNames[parseInt(capacity/20)];
   }
