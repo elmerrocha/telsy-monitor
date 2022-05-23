@@ -1,12 +1,12 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v20.05.2022
+Telsy Hogar v23.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from os import getcwd, system
-from subprocess import Popen, CalledProcessError
+from subprocess import Popen, CalledProcessError, PIPE
 from time import sleep
 from pathlib import Path
 from json import load
@@ -19,6 +19,8 @@ MEMBRANE_KEYBOARD = True
 NIBP_MEASUREMENT = False
 # Path Raspberry folder
 RASPI_PATH = './monitor/raspberry/'
+# Pipe of measure subprocess
+measure_pipe = 0
 
 def is_raspberry_pi_os():
     ''' Return a boolean value if the code is running in Raspberry OS '''
@@ -39,8 +41,10 @@ if is_raspberry_pi_os():
 
 def cancel_measurement(request):
     ''' Cancel monitor measurement '''
+    global measure_pipe
     if is_raspberry_pi_os():
         try:
+            measure_pipe.kill()
             Popen(['python3', RASPI_PATH+'measure_cancel.py'])
         except CalledProcessError as exc:
             print(exc)
@@ -150,17 +154,17 @@ def login(request):
 
 def measuring(request):
     ''' Measuring view '''
-    global NIBP_MEASUREMENT
+    global NIBP_MEASUREMENT, measure_pipe
     NIBP_MEASUREMENT = bool(int(request.POST['NIBP']))
     if is_raspberry_pi_os():
         if NIBP_MEASUREMENT:
             try:
-                Popen(['python3', RASPI_PATH+'measure_nibp.py'])
+                measure_pipe = Popen(['python3', RASPI_PATH+'measure_nibp.py'], stdout=PIPE)
             except CalledProcessError as exc:
                 print(exc)
         else:
             try:
-                Popen(['python3', RASPI_PATH+'measure_ecg.py'])
+                measure_pipe = Popen(['python3', RASPI_PATH+'measure_ecg.py'], stdout=PIPE)
             except CalledProcessError as exc:
                 print(exc)
     else:
