@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v23.05.2022
+Telsy Hogar v25.05.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -127,7 +127,7 @@ def home(request):
                 cap = read_capacity()
         except OSError as exc:
             print(exc)
-            cap = 100
+            cap = 140
     else:
         cap = 120
     return render(request,'home.html', {'batteryCapacity': cap})
