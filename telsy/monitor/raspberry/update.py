@@ -19,6 +19,7 @@ def update_firmware():
     if updatable:
         print("Different version")
         # system('git reset --hard')
+        system('rm -rf ~/.cache/chromium/')
         system('git pull origin')
     else:
         print('Same version')
