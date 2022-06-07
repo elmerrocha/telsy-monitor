@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 // Fundacion Cardiovascular de Colombia
 // Proyecto Telsy
-// Telsy Hogar v25.05.2022
+// Telsy Hogar v07.06.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
@@ -10,6 +10,7 @@ const CONNECTION  = window.navigator.onLine;
 const CURRENT_FRAME = document.location.pathname;
 // const URI = 'http://3.226.221.181:8082/api/v1'; // Public
 const URI = 'http://172.30.19.105:8082/api/v1'; // FCV
+const LOCAL_URI = 'http://localhost:8000/battery' // Battery service
 /**************************************************************************************************/
 /* Global functions  */
 /**************************************************************************************************/
@@ -545,6 +546,17 @@ if (CURRENT_FRAME == '/goalsv/') {
 /* Home */
 /**************************************************************************************************/
 if (CURRENT_FRAME == '/home/') {
+  let capacity;
+  const battery = document.getElementById('battery');
+  const batteryClassNames = [
+    'fa-battery-empty', //% < 20
+    'fa-battery-quarter', //20 <= % < 40
+    'fa-battery-half', //40 <= % < 60
+    'fa-battery-three-quarters', //60 <= & < 80
+    'fa-battery-full', //% > 80
+    'fa-battery-full', //% == 100
+    '' //null
+  ];
   function updateDate() {
     const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
     const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -601,19 +613,19 @@ if (CURRENT_FRAME == '/home/') {
     }
   }
   function batteryCapacity() {
-    const capacity = parseInt(document.getElementById('battery-capacity').innerHTML);
-    const battery = document.getElementById('battery');
-    const classNames = [
-      'fa-battery-empty', //% < 20
-      'fa-battery-quarter', //20 <= % < 40
-      'fa-battery-half', //40 <= % < 60
-      'fa-battery-three-quarters', //60 <= & < 80
-      'fa-battery-full', //% > 80
-      'fa-battery-full', //% == 100
-      'fa-charging-station', //charge
-      '' //null
-    ];
-    battery.className = classNames[parseInt(capacity/20)];
+    capacity = getMethod(LOCAL_URI);
+    if (capacity.power_ac) {
+      if (capacity.capacity >= 99) {
+        battery.className = 'fa-charging-station2';
+      }
+      else {
+        battery.className = 'fa-charging-station';
+      }
+    }
+    else {
+      battery.className = batteryClassNames[parseInt(capacity.capacity/20)];
+    }
+    setTimeout(batteryCapacity,5000); //It updates every 5 seconds.
   }
   function homeAlert() {
     const alertId = parseInt(localStorage.getItem('alertId'));

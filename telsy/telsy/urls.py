@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.05.2022
+Telsy Hogar v07.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -20,7 +20,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import include, path
 from monitor import views
 
 # HTTP Errors to return a custom template
@@ -57,4 +57,5 @@ urlpatterns = [
     path('user/', views.user),
     path('weight/',views.weight),
     path('weightc/',views.weight_confirmation),
+    path('battery/', include('battery.urls')),
 ]

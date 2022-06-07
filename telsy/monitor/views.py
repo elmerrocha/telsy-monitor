@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v25.05.2022
+Telsy Hogar v07.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -29,7 +29,6 @@ def is_raspberry_pi_os():
 
 if is_raspberry_pi_os():
     from monitor.raspberry import raspberry_wifi
-    from monitor.raspberry.geekworm_x728 import read_capacity, power_supply_status
     from monitor.raspberry.update import update_firmware
     from monitor.raspberry.information import get_information
     if MEMBRANE_KEYBOARD:
@@ -118,19 +117,7 @@ def home(request):
             print('Current time:',time)
             if is_raspberry_pi_os():
                 system('date --set '+time)
-    if is_raspberry_pi_os():
-        try:
-            ac_adapter = power_supply_status()
-            if ac_adapter:
-                cap = 120
-            else:
-                cap = read_capacity()
-        except OSError as exc:
-            print(exc)
-            cap = 140
-    else:
-        cap = 120
-    return render(request,'home.html', {'batteryCapacity': cap})
+    return render(request,'home.html')
 
 def index(request):
     ''' Initial index view '''
