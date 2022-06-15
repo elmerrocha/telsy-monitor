@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v07.06.2022
+Telsy Hogar v15.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -23,7 +23,7 @@ HOLD = 26
 HOLD_LED = 19
 # Status
 light_status = False
-hold_status  = False
+hold_status = False
 # Setup
 gpio.setup(LIGHT, gpio.IN,  pull_up_down=gpio.PUD_UP)
 gpio.setup(HOLD, gpio.IN,  pull_up_down=gpio.PUD_UP)
@@ -35,7 +35,7 @@ BACKLIGHT_PATH = '/sys/class/backlight/rpi_backlight/brightness'
 try:
     while True:
         light_button = gpio.input(LIGHT)
-        hold_button  = gpio.input(HOLD)
+        hold_button = gpio.input(HOLD)
         if not light_button:
             if light_status:
                 system('bash -c "echo 255 > '+BACKLIGHT_PATH+'"')

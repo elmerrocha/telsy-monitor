@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v07.06.2022
+Telsy Hogar v15.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -18,20 +18,20 @@ try:
     while True:
         data_ = data
         data = serial.read()
-        if ((data_==b'\x01') and (data==b'\x81')):
+        if ((data_ == b'\x01') and (data == b'\x81')):
             serial_write(100)
             start_time = datetime.now()
 
         # Temperature
-        if data==b'\x15':
+        if data == b'\x15':
             info.write('### Temperature ###\n')
             info.write(serial_read(data)+'\n')
         # SPO2 Wave
-        elif data==b'\x16':
+        elif data == b'\x16':
             tmp = serial_read(data)
             spo2_txt.write(tmp.split('*')[0].split('S')[0]+'\n')
         # SPO2
-        elif data==b'\x17':
+        elif data == b'\x17':
             info.write('### SPO2 ###\n')
             info.write(serial_read(data)+'\n')
 

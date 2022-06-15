@@ -1,24 +1,27 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v07.06.2022
+Telsy Hogar v15.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from django.http import JsonResponse
 from os import getcwd
 
-#Global variables
+# Global variables
 last_capacity = 120
 last_ac_status = True
 
+
 def is_raspberry_pi_os():
     ''' Return a boolean value if the code is running in Raspberry OS '''
-    current_path = getcwd().replace('\\','/')
+    current_path = getcwd().replace('\\', '/')
     return current_path[0:6] == '/home/'
+
 
 if is_raspberry_pi_os():
     from monitor.raspberry.geekworm_x728 import read_capacity, power_supply_status
+
 
 def battery(request):
     ''' Battery capacity and power supply status view '''

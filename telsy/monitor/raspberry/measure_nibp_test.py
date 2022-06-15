@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v07.06.2022
+Telsy Hogar v15.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -18,30 +18,30 @@ try:
     while True:
         data_ = data
         data = serial.read()
-        if ((data_==b'\x01') and (data==b'\x81')):
+        if ((data_ == b'\x01') and (data == b'\x81')):
             serial_write(100)
             sleep(0.5)
             serial_write(35)
             start_time = datetime.now()
 
         # Cuff pressure
-        if data==b'\x20':
+        if data == b'\x20':
             info.write('### Cuff pressure ###\n')
             info.write(serial_read(data)+'\n')
         # NIBP End
-        elif data==b'\x21':
+        elif data == b'\x21':
             info.write('### NIBP End ###\n')
             info.write(serial_read(data)+'\n')
         # NIBP Results
-        elif data==b'\x22':
+        elif data == b'\x22':
             info.write('### Cuff Results ###\n')
             info.write(serial_read(data)+'\n')
         # NIBP pulse rate
-        elif data==b'\x23':
+        elif data == b'\x23':
             info.write('### NIBP pulse rate ###\n')
             info.write(serial_read(data)+'\n')
         # NIBP status
-        elif data==b'\x24':
+        elif data == b'\x24':
             info.write('### NIBP status ###\n')
             info.write(serial_read(data)+'\n')
 

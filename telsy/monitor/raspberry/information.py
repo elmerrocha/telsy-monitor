@@ -1,11 +1,12 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v07.06.2022
+Telsy Hogar v15.06.2022
 Ing. Elmer Rocha Jaime
 '''
 
 from subprocess import getoutput
+
 
 def get_information():
     ''' Return Raspberry Pi information '''
@@ -16,7 +17,7 @@ def get_information():
     ethernet = ifconfig[eth0:eth0+250]
     wifi = ifconfig[wlan0:wlan0+250]
     gprs_4g = ifconfig[wwan0:wwan0+250]
-    type,raspberry_ip, raspberry_mac, connection = '', '', '', False
+    type, raspberry_ip, raspberry_mac, connection = '', '', '', False
     if ethernet.find('inet ') > 0:
         type = 'ethernet'
         connection = True
@@ -39,4 +40,10 @@ def get_information():
         inet = ethernet.find('inet ')
         netmask = ethernet.find('  netmask')
         raspberry_ip = ethernet[inet+5:netmask]
-    return {'type':type, 'connection':connection, 'ip':raspberry_ip, 'mac':raspberry_mac}
+    response = {
+        'type': type,
+        'connection': connection,
+        'ip': raspberry_ip,
+        'mac': raspberry_mac
+    }
+    return response
