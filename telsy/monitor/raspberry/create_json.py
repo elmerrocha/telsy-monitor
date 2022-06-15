@@ -56,7 +56,7 @@ else:
 json_nibp = nibp[0].split('S')
 
 pressure = ',"Systolic":'+json_nibp[0]+',"Diastolic":'
-pressure =+ json_nibp[1]+',"MAP":'+json_nibp[2]
+pressure += json_nibp[1]+',"MAP":'+json_nibp[2]
 data = '"RR":'+JSON_RR+',"SPO2":'+json_spo2[0]
 data += ',"Pulse":'+json_spo2[1]+pressure
 data += ',"Date":"'+current_date+'","ECG":"'+ecg_wave+'"'
