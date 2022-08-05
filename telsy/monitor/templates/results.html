@@ -127,7 +127,7 @@
                                     </div>
                                     {% endif %}
                                     <!-- ECG Graph -->
-                                    {% if ECG != "0" %}
+                                    {% if ECG != '0' %}
                                     <div class="card card-data2 bor bor-grey bor-med padding-4 m-1">
                                         <div class="d-flex align-items-center">
                                             <div class="ico my-auto">
@@ -140,6 +140,9 @@
                                         </div>
                                         <canvas id="canvas" width="473" height="40"></canvas>
                                     </div>
+                                    {% endif %}
+                                    {% if Temperature != 0 %}
+                                    <p id="result-temperature" style="visibility: hidden">{{Temperature}}</p>
                                     {% endif %}
                                     <p id="result-ecg" style="visibility: hidden">{{ECG}}</p>
                                 </div>

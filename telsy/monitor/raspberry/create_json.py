@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v15.06.2022
+Telsy Hogar v05.08.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -40,7 +40,9 @@ for i in range(length_file, 0, -1):
     ecg.append(int(ecg_wave[i*5:(i*5)+4]))
 
 if len(rr) == 0:
-    rr.append('0')
+    '0S0*0S1'
+    '22.8S6543.6*0S1
+    rr.append('0S0*1S1')
 if len(temp) ==  0:
     temp.append('0')
 if len(spo2) == 0:
@@ -49,11 +51,22 @@ if len(nibp) == 0:
     nibp.append('0S0S0')
 if int(sum(ecg)/len(ecg)) == 2048:
     ecg_wave = '0'
-
 if int(rr[2]) > 200:
     JSON_RR = '0'
 else:
     JSON_RR = rr[2]
+if int(temp[2].split('*')[1].split('S')[0]) == 0:
+    if int(temp[2].split('*')[0].split('S')[0]) < 50:
+        json_temp = temp[2].split('*')[0].split('S')[0]
+    else:
+        json_temp = 0
+elif int(temp[2].split('*')[1].split('S')[1]) == 0:
+    if int(temp[2].split('*')[0].split('S')[1]) < 50:
+        json_temp = temp[2].split('*')[0].split('S')[1]
+    else:
+        json_temp = 0
+else:
+    json_temp = 0
 if int(spo2[2].split('S')[1]) > 200:
     json_spo2 = ['0', '0']
 else:
@@ -64,6 +77,7 @@ pressure = ',"Systolic":'+json_nibp[0]+',"Diastolic":'
 pressure += json_nibp[1]+',"MAP":'+json_nibp[2]
 data = '"RR":'+JSON_RR+',"SPO2":'+json_spo2[0]
 data += ',"Pulse":'+json_spo2[1]+pressure
+data += ',"Temperature":'+json_temp
 data += ',"Date":"'+current_date+'","ECG":"'+ecg_wave+'"'
 json_txt.write(data)
 json_txt.write('}')

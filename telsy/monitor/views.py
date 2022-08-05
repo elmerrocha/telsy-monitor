@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v15.06.2022
+Telsy Hogar v05.08.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -257,7 +257,8 @@ def results(request):
     except EnvironmentError as exc:
         print(exc)
         results_data = {'RR': 0, 'SPO2': 0, 'Pulse': 0, 'Systolic': 0,
-                        'Diastolic': 0, 'MAP': 0, 'Date': '', 'ECG': '0'}
+                        'Diastolic': 0, 'MAP': 0, 'Date': '', 'ECG': '0',
+                        'Temperature': 0}
     return render(request, 'results.html', results_data)
 
 

@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 // Fundacion Cardiovascular de Colombia
 // Proyecto Telsy
-// Telsy Hogar v15.06.2022
+// Telsy Hogar v05.08.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
@@ -1066,7 +1066,7 @@ if (CURRENT_FRAME == '/network/') {
 /* Results */
 /**************************************************************************************************/
 if (CURRENT_FRAME == '/results/') {
-  let pulse=0,spo2=0,rr=0,systole=0,diastole=0,mean=0,ecgWaveData=0;
+  let pulse=0,spo2=0,rr=0,systole=0,diastole=0,mean=0,ecgWaveData=0,temperature=0;
   if (document.getElementById('result-pulse')) {
     pulse = parseInt(document.getElementById('result-pulse').textContent);
   }
@@ -1088,6 +1088,9 @@ if (CURRENT_FRAME == '/results/') {
   if (document.getElementById('result-ecg')) {
     ecgWaveData = document.getElementById('result-ecg').textContent;
   }
+  if (document.getElementById('result-temperature')) {
+    temperature = parseFloat(document.getElementById('result-temperature').textContent).toFixed(1);
+  }
   function sendVitalSigns() {
     const dataToSend = {
       patient: {id:parseInt(localStorage.getItem('userId'))},
@@ -1097,7 +1100,8 @@ if (CURRENT_FRAME == '/results/') {
       Systolic: systole,
       Diastolic: diastole,
       MAP: mean,
-      ECG: ecgWaveData
+      ECG: ecgWaveData,
+      Temperature: temperature
     };
     function successFunction() {
       localStorage.setItem('alertId',3);
