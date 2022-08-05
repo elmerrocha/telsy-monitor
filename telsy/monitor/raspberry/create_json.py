@@ -57,14 +57,14 @@ if int(temp[2].split('*')[1].split('S')[0]) == 0:
     if float(temp[2].split('*')[0].split('S')[0]) < 50:
         json_temp = temp[2].split('*')[0].split('S')[0]
     else:
-        json_temp = 0
+        json_temp = '0'
 elif int(temp[2].split('*')[1].split('S')[1]) == 0:
     if float(temp[2].split('*')[0].split('S')[1]) < 50:
         json_temp = temp[2].split('*')[0].split('S')[1]
     else:
-        json_temp = 0
+        json_temp = '0'
 else:
-    json_temp = 0
+    json_temp = '0'
 if int(spo2[2].split('S')[1]) > 200:
     json_spo2 = ['0', '0']
 else:
