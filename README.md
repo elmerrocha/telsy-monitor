@@ -127,7 +127,7 @@ sudo apt-get install -y xscreensaver plymouth plymouth-themes pix-plym-splash
 sudo apt-get remove -y lxplug-ptbatt
 ```
 ```
-sudo pip3 install Django==3.2.13 wifi smbus pyserial RPi.GPIO pytz
+sudo pip3 install Django==3.2.15 wifi smbus pyserial RPi.GPIO pytz
 ```
 
 ### Step 5. Edit the boot config.txt file
@@ -141,6 +141,7 @@ And add the following at the last line (the shortcut to paste is `Shift + Insert
 disable_splash=1
 dtoverlay=uart2
 avoid_warnings=1
+dtoverlay=disable-bt
 ```
 The last lines should look like this:
 
@@ -167,7 +168,7 @@ logo.nologo vt.global_cursor_default=0
 ```
 sudo nano /usr/share/plymouth/themes/pix/pix.script
 ```
-Remove the following (stay at the line to remove and press `Ctrl+K`):
+Remove the following (stay at the line to remove and press <kbd>Ctrl+K</kbd>):
 ```
 message_sprite = Sprite();
 message_sprite.SetPosition(screen_width * 0.1, screen_height * 0.9, 10000);

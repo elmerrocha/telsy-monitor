@@ -20,6 +20,7 @@ ecg_txt.close()
 lines_file = file.readlines()
 length_file = len(lines_file)-1
 file.close()
+temp = []
 spo2 = []
 rr = []
 nibp = []
@@ -30,6 +31,8 @@ current_date = datetime.now(timezone('America/Bogota')).strftime('%d/%m/%Y')
 for i in range(length_file, 0, -1):
     if lines_file[i].find('RR') == 0:
         rr.append(lines_file[i].replace('\n', '').replace('RR,', ''))
+    elif lines_file[i].find('TEMP') == 0:
+        temp.append(lines_file[i].replace('\n', '').replace('TEMP,', ''))
     elif lines_file[i].find('SPO2') == 0:
         spo2.append(lines_file[i].replace('\n', '').replace('SPO2,', ''))
     elif lines_file[i].find('NIBP') == 0:
@@ -38,6 +41,8 @@ for i in range(length_file, 0, -1):
 
 if len(rr) == 0:
     rr.append('0')
+if len(temp) ==  0:
+    temp.append('0')
 if len(spo2) == 0:
     spo2.append('0S0')
 if len(nibp) == 0:

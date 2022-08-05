@@ -30,6 +30,7 @@ handler404 = 'monitor.views.error_404'
 handler500 = 'monitor.views.error_500'
 
 urlpatterns = [
+    path('battery/', include('battery.urls')),
     path('cancel/',views.cancel_measurement),
     path('connected/',views.connected),
     path('connecting/<ssid>',views.connecting),
@@ -57,5 +58,4 @@ urlpatterns = [
     path('user/', views.user),
     path('weight/',views.weight),
     path('weightc/',views.weight_confirmation),
-    path('battery/', include('battery.urls')),
 ]

@@ -38,6 +38,9 @@ try:
         # Respiration rate
         if data == b'\x11':
             file.write('RR,'+serial_read(data)+'\n')
+        # Temperature
+        if data == b'\x15':
+            file.write('TEMP,'+serial_read(data)+'\n')
         # SPO2
         if data == b'\x17':
             file.write('SPO2,'+serial_read(data)+'\n')
