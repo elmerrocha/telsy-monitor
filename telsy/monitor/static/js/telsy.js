@@ -1089,7 +1089,11 @@ if (CURRENT_FRAME == '/results/') {
     ecgWaveData = document.getElementById('result-ecg').textContent;
   }
   if (document.getElementById('result-temperature')) {
-    temperature = parseFloat(document.getElementById('result-temperature').textContent).toFixed(1);
+    if (parseFloat(document.getElementById('result-temperature').textContent).toFixed(1) > 0.0) {
+      temperature = parseFloat(document.getElementById('result-temperature').textContent).toFixed(1);
+    } else {
+      temperature = 0;
+    }
   }
   function sendVitalSigns() {
     const dataToSend = {
