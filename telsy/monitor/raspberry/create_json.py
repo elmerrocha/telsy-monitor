@@ -54,12 +54,12 @@ if int(rr[2]) > 200:
 else:
     JSON_RR = rr[2]
 if int(temp[2].split('*')[1].split('S')[0]) == 0:
-    if int(temp[2].split('*')[0].split('S')[0]) < 50:
+    if float(temp[2].split('*')[0].split('S')[0]) < 50:
         json_temp = temp[2].split('*')[0].split('S')[0]
     else:
         json_temp = 0
 elif int(temp[2].split('*')[1].split('S')[1]) == 0:
-    if int(temp[2].split('*')[0].split('S')[1]) < 50:
+    if float(temp[2].split('*')[0].split('S')[1]) < 50:
         json_temp = temp[2].split('*')[0].split('S')[1]
     else:
         json_temp = 0
