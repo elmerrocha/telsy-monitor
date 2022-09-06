@@ -1,3 +1,5 @@
+#!/bin/bash
+
 sleep 5
 chromium-browser http://localhost:8000 \
   --check-for-update-interval=31536000 \

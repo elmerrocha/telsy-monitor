@@ -1,15 +1,15 @@
 /**************************************************************************************************/
 // Fundacion Cardiovascular de Colombia
 // Proyecto Telsy
-// Telsy Hogar v05.08.2022
+// Telsy Hogar v06.09.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
 /**************************************************************************************************/
 const CONNECTION  = window.navigator.onLine;
 const CURRENT_FRAME = document.location.pathname;
-// const URI = 'http://3.226.221.181:8082/api/v1'; // Public
-const URI = 'http://172.30.19.105:8082/api/v1'; // FCV
+const URI = 'http://3.233.48.181:8082/api/v1'; // Public
+// const URI = 'http://172.30.19.105:8082/api/v1'; // FCV
 const LOCAL_URI = 'http://localhost:8000/battery' // Battery service
 /**************************************************************************************************/
 /* Global functions  */

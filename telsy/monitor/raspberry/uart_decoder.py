@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v05.08.2022
+Telsy Hogar v06.09.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -500,10 +500,10 @@ def nibp_results(data):  # 0x22
     sys_l = ((data[0] & 0x02) << 6) | (data[2] & 0x7F)
     dia_h = (((data[0] & 0x04) << 5) | (data[3] & 0x7F)) << 8
     dia_l = ((data[0] & 0x08) << 4) | (data[4] & 0x7F)
-    mead_h = (((data[0] & 0x10) << 3) | (data[5] & 0x7F)) << 8
-    mead_l = ((data[0] & 0x20) << 2) | (data[6] & 0x7F)
+    mean_h = (((data[0] & 0x10) << 3) | (data[5] & 0x7F)) << 8
+    mean_l = ((data[0] & 0x20) << 2) | (data[6] & 0x7F)
     ###########################################################################
-    return str(sys_h | sys_l)+'S'+str(dia_h | dia_l)+'S'+str(mead_h | mead_l)
+    return str(sys_h | sys_l)+'S'+str(dia_h | dia_l)+'S'+str(mean_h | mean_l)
 
 
 def nibp_pulse_rate(data):  # 0x23
