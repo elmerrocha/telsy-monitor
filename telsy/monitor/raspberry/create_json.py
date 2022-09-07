@@ -1,7 +1,7 @@
 '''
 Fundacion Cardiovascular de Colombia
 Proyecto Telsy
-Telsy Hogar v06.09.2022
+Telsy Hogar v07.09.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -47,7 +47,10 @@ if len(spo2) == 0:
     spo2.append('0S0')
 if len(nibp) == 0:
     nibp.append('0S0S0')
-if int(sum(ecg)/len(ecg)) == 2048:
+if len(ecg) > 0:
+    if int(sum(ecg)/len(ecg)) == 2048:
+        ecg_wave = '0'
+else:
     ecg_wave = '0'
 if int(rr[2]) > 200:
     JSON_RR = '0'
