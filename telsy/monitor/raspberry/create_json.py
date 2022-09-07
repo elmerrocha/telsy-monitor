@@ -41,9 +41,15 @@ for i in range(length_file, 0, -1):
 
 if len(rr) == 0:
     rr.append('0S0*1S1')
+    rr.append('0S0*1S1')
+    rr.append('0S0*1S1')
 if len(temp) ==  0:
     temp.append('0')
+    temp.append('0')
+    temp.append('0')
 if len(spo2) == 0:
+    spo2.append('0S0')
+    spo2.append('0S0')
     spo2.append('0S0')
 if len(nibp) == 0:
     nibp.append('0S0S0')
