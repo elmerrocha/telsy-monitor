@@ -44,9 +44,9 @@ if len(rr) == 0:
     rr.append('0')
     rr.append('0')
 if len(temp) ==  0:
-    temp.append('0')
-    temp.append('0')
-    temp.append('0')
+    temp.append('0S0*1S1')
+    temp.append('0S0*1S1')
+    temp.append('0S0*1S1')
 if len(spo2) == 0:
     spo2.append('0S0')
     spo2.append('0S0')
