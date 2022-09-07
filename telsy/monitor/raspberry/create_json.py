@@ -40,9 +40,9 @@ for i in range(length_file, 0, -1):
     ecg.append(int(ecg_wave[i*5:(i*5)+4]))
 
 if len(rr) == 0:
-    rr.append('0S0*1S1')
-    rr.append('0S0*1S1')
-    rr.append('0S0*1S1')
+    rr.append('0')
+    rr.append('0')
+    rr.append('0')
 if len(temp) ==  0:
     temp.append('0')
     temp.append('0')
