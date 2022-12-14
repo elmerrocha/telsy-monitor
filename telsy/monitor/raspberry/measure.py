@@ -11,7 +11,7 @@ from datetime import datetime
 from time import sleep
 from json import dumps
 from monitor.raspberry import uart_decoder
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
 
 # Relay enabler
 # GPIO10
@@ -57,18 +57,17 @@ def turn_on_board():
     gpio.setwarnings(False)
     gpio.setmode(gpio.BCM)
     gpio.setup(RELAY_PIN, gpio.OUT)
-    sleep(5)
     serial = Serial('/dev/ttyAMA0', 115200)
 
 
-class Spo2Consumer(AsyncWebsocketConsumer):
+class Spo2Consumer(WebsocketConsumer):
     ''' SpO2 Consumer '''
-    async def connect(self):
+    def connect(self):
         if is_raspberry_pi_os():
             turn_on_board()
         global serial, buffer_data, measure_flarg
         print('SpO2 Websocket connected :)')
-        await self.accept()
+        self.accept()
 
         if is_raspberry_pi_os():
             try:
@@ -93,42 +92,42 @@ class Spo2Consumer(AsyncWebsocketConsumer):
                     # Send data
                     if send_data:
                         send_data = False
-                        await self.send(dumps(buffer_data))
+                        self.send(dumps(buffer_data))
                     # 60 seconds measurement stop
                     current_time = datetime.now() - start_time
                     if current_time.total_seconds() >= 60:
                         measure_flarg = False
-                        await self.close()
+                        self.close()
                         break
             except KeyboardInterrupt as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
             except OSError as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
         else:
             sleep(3)
-            await self.send(dumps({'type': 'websocket', 'value': '99S80S36.0'}))
+            self.send(dumps({'type': 'websocket', 'value': '99S80S36.0'}))
             print('SpO2 Websocket sended default data <3')
-            await self.close()
+            self.close()
 
-    async def disconnect(self, code):
+    def disconnect(self, code):
         if is_raspberry_pi_os():
             turn_off_board()
         print('SpO2 Websocket disconnected :(')
-        await self.close()
+        self.close()
 
 
-class NibpConsumer(AsyncWebsocketConsumer):
+class NibpConsumer(WebsocketConsumer):
     ''' NIBP Consumer '''
-    async def connect(self):
+    def connect(self):
         if is_raspberry_pi_os():
             turn_on_board()
         global serial, buffer_data, measure_flarg, nibp_flarg
         print('NIBP Websocket connected :)')
-        await self.accept()
+        self.accept()
 
         if is_raspberry_pi_os():
             try:
@@ -153,36 +152,36 @@ class NibpConsumer(AsyncWebsocketConsumer):
                     # Send data
                     if send_data:
                         send_data = False
-                        await self.send(dumps(buffer_data))
+                        self.send(dumps(buffer_data))
             except KeyboardInterrupt as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
             except OSError as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
         else:
             sleep(3)
-            await self.send(dumps({'type': 'websocket', 'value': '120S80S93'}))
+            self.send(dumps({'type': 'websocket', 'value': '120S80S93'}))
             print('NIBP Websocket sended default data <3')
-            await self.close()
+            self.close()
 
-    async def disconnect(self, code):
+    def disconnect(self, code):
         if is_raspberry_pi_os():
             turn_off_board()
         print('NIBP Websocket disconnected :(')
-        await self.close()
+        self.close()
 
 
-class EcgConsumer(AsyncWebsocketConsumer):
+class EcgConsumer(WebsocketConsumer):
     ''' ECG Consumer '''
-    async def connect(self):
+    def connect(self):
         if is_raspberry_pi_os():
             turn_on_board()
         global serial, buffer_data, measure_flarg, ecg_wave
         print('ECG Websocket connected :)')
-        await self.accept()
+        self.accept()
 
         if is_raspberry_pi_os():
             try:
@@ -211,42 +210,42 @@ class EcgConsumer(AsyncWebsocketConsumer):
                     # Send data
                     if send_data:
                         send_data = False
-                        await self.send(dumps(buffer_data))
+                        self.send(dumps(buffer_data))
                     # 60 seconds measurement stop
                     current_time = datetime.now() - start_time
                     if current_time.total_seconds() >= 60:
                         measure_flarg = False
-                        await self.close()
+                        self.close()
                         break
             except KeyboardInterrupt as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
             except OSError as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
         else:
             sleep(3)
-            await self.send(dumps({'type': 'websocket', 'value': '80S30', 'ecg_wave':ecg_wave}))
+            self.send(dumps({'type': 'websocket', 'value': '80S30', 'ecg_wave':ecg_wave}))
             print('ECG Websocket sended default data <3')
-            await self.close()
+            self.close()
 
-    async def disconnect(self, code):
+    def disconnect(self, code):
         if is_raspberry_pi_os():
             turn_off_board()
         print('ECG Websocket disconnected :(')
-        await self.close()
+        self.close()
 
 
-class MonitorConsumer(AsyncWebsocketConsumer):
+class MonitorConsumer(WebsocketConsumer):
     ''' Monitor Consumer '''
-    async def connect(self):
+    def connect(self):
         if is_raspberry_pi_os():
             turn_on_board()
         global serial, buffer_data, measure_flarg, nibp_flarg, ecg_wave
         print('Monitor Websocket connected :)')
-        await self.accept()
+        self.accept()
 
         if is_raspberry_pi_os():
             data = 0
@@ -293,32 +292,32 @@ class MonitorConsumer(AsyncWebsocketConsumer):
                     # Send data
                     if send_data:
                         send_data = False
-                        await self.send(dumps(buffer_data))
+                        self.send(dumps(buffer_data))
                     # 60 seconds measurement stop
                     current_time = datetime.now() - start_time
                     if current_time.total_seconds() >= 60:
                         measure_flarg = False
-                        await self.close()
+                        self.close()
                         break
             except KeyboardInterrupt as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
             except OSError as err:
                 print(err)
                 turn_off_board()
-                await self.close()
+                self.close()
         else:
             sleep(3)
-            await self.send(dumps({'type': 'websocket', 'value': '80S30S99S80S36.0S120S80S93', 'ecg_wave':ecg_wave}))
+            self.send(dumps({'type': 'websocket', 'value': '80S30S99S80S36.0S120S80S93', 'ecg_wave':ecg_wave}))
             print('Monitor Websocket sended default data <3')
-            await self.close()
+            self.close()
 
-    async def disconnect(self, code):
+    def disconnect(self, code):
         if is_raspberry_pi_os():
             turn_off_board()
         print('Monitor Websocket disconnected :(')
-        await self.close()
+        self.close()
 
 
 

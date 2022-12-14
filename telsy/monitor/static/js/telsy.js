@@ -97,43 +97,49 @@ function createCustomElement(element,elementClass,elementId,content) {
   customElement.innerHTML = content;
   return customElement;
 }
-let ecg_live_graph;
-function ecgLiveWaveGraph(ecgData, live_graph) {
+let ecgLiveData, ecgLiveWave, ecgCtx, graphWidth, graphHeight, scanBarWidth, step, live_graph;
+let ecg_live_graph, ecgX = 0, ecgpX = 0, ecgY = graphHeight, ecgpY = graphHeight, i = 0;
+function ecgLiveWaveGraph(liveGraph) {
   //ECG Wave
+  live_graph = liveGraph;
   const ECG_COLOR = '#00FF00';
-  const ecgLiveWave = document.getElementById('ecg-wave');
-  const ecgCtx = ecgLiveWave.getContext('2d');
-  const graphWidth = ecgLiveWave.width;
-  const graphHeight = ecgLiveWave.height;
-  let ecgX = 0, ecgpX = 0, ecgY = graphHeight, ecgpY = graphHeight, i = 0;
+  ecgLiveWave = document.getElementById('ecg-wave');
+  ecgCtx = ecgLiveWave.getContext('2d');
+  graphWidth = ecgLiveWave.width;
+  graphHeight = ecgLiveWave.height;
   ecgCtx.strokeStyle = ECG_COLOR;
   ecgCtx.lineWidth = 2;
   ecgCtx.setTransform(1, 0, 0, -1, 0, graphHeight);
-  const scanBarWidth = 7;
-  const step = 0.5;
-  function drawEcg() {
-    ecgX += step;
-    ecgCtx.clearRect(ecgX, 0, scanBarWidth, graphHeight);
-    ecgCtx.beginPath();
-    ecgCtx.moveTo(ecgpX, ecgpY);
-    ecgCtx.lineJoin= 'round';
-    if (live_graph) {
-      ecgY = ecgData/(4096/graphHeight);//4096 is the max possible value
-    } else {
-      ecgY = (ecgData[++i >= ecgData.length ? i=0 : i++]/(2048/graphHeight))-(graphHeight/1.5);
-    }
-    ecgCtx.lineTo(ecgX, ecgY);
-    ecgCtx.stroke();
-    ecgpX = ecgX;
-    ecgpY = ecgY;
-    if (ecgpX > graphWidth) {
-        ecgX = ecgpX = -step;
-    }
-    if (!live_graph && ecg_live_graph) {
-      requestAnimationFrame(drawEcg);
-    }
+  scanBarWidth = 7;
+  step = 0.5;
+  if (!live_graph) {
+    step = 0.5;
+    drawEcg();
+  } else {
+    step = 0.2;
   }
-  drawEcg();
+}
+function drawEcg() {
+  ecgX += step;
+  ecgCtx.clearRect(ecgX, 0, scanBarWidth, graphHeight);
+  ecgCtx.beginPath();
+  ecgCtx.moveTo(ecgpX, ecgpY);
+  ecgCtx.lineJoin= 'round';
+  if (live_graph) {
+    ecgY = (ecgLiveData/(2048/graphHeight)-(graphHeight/1.5));//4096 is the max possible value
+  } else {
+    ecgY = (ecgLiveData[++i >= ecgLiveData.length ? i=0 : i++]/(2048/graphHeight))-(graphHeight/1.5);
+  }
+  ecgCtx.lineTo(ecgX, ecgY);
+  ecgCtx.stroke();
+  ecgpX = ecgX;
+  ecgpY = ecgY;
+  if (ecgpX > graphWidth) {
+      ecgX = ecgpX = -step;
+  }
+  if (!live_graph && ecg_live_graph) {
+    requestAnimationFrame(drawEcg);
+  }
 }
 function ecgWave(waveData) {
   const canvas = document.getElementById('canvas');
@@ -943,11 +949,23 @@ if (CURRENT_FRAME == '/measure/') {
       socket.onmessage = function(e) {
         let data = JSON.parse(e.data);
         if (data.type == 'temp') {
+          if ((parseInt(data.value) > 0) && (parseInt(data.value) <= 100)) {
             temp.innerHTML = data.value;
+          } else {
+            temp.innerHTML = '...';
+          }
         } else if (data.type == 'spo2') {
-            spo2Tmp = data.value.split('S');
+          spo2Tmp = data.value.split('S');
+          if ((parseInt(spo2Tmp[0]) > 0) && (parseInt(spo2Tmp[0]) <= 100)) {
             spo2.innerHTML = spo2Tmp[0];
-            hrSpo2.innerHTML = spo2Tmp[1];
+          } else {
+            spo2.innerHTML = '...';
+          }
+          if ((parseInt(spo2Tmp[1]) > 0) && (parseInt(spo2Tmp[1]) <= 200)) {
+            hrSpo2.innerHTML  = spo2Tmp[1];
+          } else {
+            hrSpo2.innerHTML  = '...';
+          }
         } else if (data.type == 'websocket') {
           websocket = true;
           spo2Tmp = data.value.split('S');
@@ -980,9 +998,21 @@ if (CURRENT_FRAME == '/measure/') {
           cuff.innerHTML = data.value;
         } else if (data.type == 'nibp') {
           nibpResult = data.value.split('S');
-          systole.innerHTML = nibpResult[0];
-          diastole.innerHTML = nibpResult[1];
-          map.innerHTML = nibpResult[2];
+          if ((parseInt(nibpResult[0]) > 0) && (parseInt(nibpResult[0]) <= 200)) {
+            systole.innerHTML = nibpResult[0];
+          } else {
+            systole.innerHTML = '...';
+          }
+          if ((parseInt(nibpResult[1]) > 0) && (parseInt(nibpResult[1]) <= 200)) {
+            diastole.innerHTML = nibpResult[1];
+          } else {
+            diastole.innerHTML = '...';
+          }
+          if ((parseInt(nibpResult[2]) > 0) && (parseInt(nibpResult[2]) <= 200)) {
+            map.innerHTML = nibpResult[2];
+          } else {
+            map.innerHTML = '...';
+          }
           nibpCuff.className = 'visually-hidden';
         } else if (data.type == 'websocket') {
           websocket = true;
@@ -1007,18 +1037,31 @@ if (CURRENT_FRAME == '/measure/') {
       rr = document.getElementById('rr');
       ecg_live_graph = true;
       URL += 'ecg';
-      let ecgResult;
+      let ecgResult, once_live_graph = true;
       socket = new WebSocket(URL);
       socket.onmessage = function(e) {
         let data = JSON.parse(e.data);
         if (data.type == 'ecg') {
           ecgData = data.value;
-          ecgLiveWaveGraph(ecgData, true);
+          ecgLiveData = ecgData;
+          if (once_live_graph) {
+            once_live_graph = false;
+            ecgLiveWaveGraph(true);
+          }
+          drawEcg();
         } else if (data.type == 'hr') {
+          if((parseInt(data.value) > 0) && (parseInt(data.value) <= 200)) {
             hrEcg.innerHTML = data.value;
             localStorage.setItem('hrEcg', data.value);
+          } else {
+            hrEcg.innerHTML = '...';
+          }
         } else if (data.type == 'rr') {
+          if((parseInt(data.value) > 0) && (parseInt(data.value) <= 100)) {
             rr.innerHTML = data.value;
+          } else {
+            rr.innerHTML = '...';
+          }
         } else if (data.type == 'websocket') {
           websocket = true;
           ecgResult = data.value.split('S');
@@ -1026,7 +1069,8 @@ if (CURRENT_FRAME == '/measure/') {
           localStorage.setItem('hrEcg', ecgResult[0]);
           rr.innerHTML = ecgResult[1];
           ecgData = data.ecg_wave;
-          ecgLiveWaveGraph(ecgData, false);
+          ecgLiveData = ecgData;
+          ecgLiveWaveGraph(false);
           socket.close();
         } else {
           console.log('Websocket error :(');
@@ -1049,32 +1093,71 @@ if (CURRENT_FRAME == '/measure/') {
       map = document.getElementById('map');
       ecg_live_graph = true;
       URL += 'monitor';
-      let monitorResult;
+      let monitorResult, once_live_graph2 = true;
       socket = new WebSocket(URL);
       socket.onmessage = function(e) {
         let data = JSON.parse(e.data);
         if (data.type == 'ecg') {
           ecgData = data.value;
           ecg_wave_data += ecgData +',';
-          ecgLiveWaveGraph(ecgData, true);
+          ecgLiveData = ecgData;
+          if (once_live_graph2) {
+            once_live_graph2 = false;
+            ecgLiveWaveGraph(true);
+          }
+          drawEcg();
         } else if (data.type == 'hr') {
-          hrEcg.innerHTML = data.value;
-          localStorage.setItem('hrEcg', data.value);
+          if((parseInt(data.value) > 0) && (parseInt(data.value) <= 200)) {
+            hrEcg.innerHTML = data.value;
+            localStorage.setItem('hrEcg', data.value);
+          } else {
+            hrEcg.innerHTML = '...';
+          }
         } else if (data.type == 'rr') {
-          rr.innerHTML = data.value;
+          if((parseInt(data.value) > 0) && (parseInt(data.value) <= 100)) {
+            rr.innerHTML = data.value;
+          } else {
+            rr.innerHTML = '...';
+          }
         } else if (data.type == 'temp') {
-          temp.innerHTML = data.value;
+          if ((parseInt(data.value) > 0) && (parseInt(data.value) <= 100)) {
+            temp.innerHTML = data.value;
+          } else {
+            temp.innerHTML = '...';
+          }
         } else if (data.type == 'spo2') {
           monitorResult = data.value.split('S');
-          spo2.innerHTML = monitorResult[0];
-          hrSpo2.innerHTML = monitorResult[1];
+          if ((parseInt(monitorResult[0]) > 0) && (parseInt(monitorResult[0]) <= 100)) {
+            spo2.innerHTML = monitorResult[0];
+          } else {
+            spo2.innerHTML = '...';
+          }
+          if ((parseInt(monitorResult[1]) > 0) && (parseInt(monitorResult[1]) <= 200)) {
+            hrSpo2.innerHTML  = monitorResult[1];
+          } else {
+            hrSpo2.innerHTML  = '...';
+          }
         } else if (data.type == 'cuff') {
-          map.innerHTML = data.value;
+          document.getElementById('diastole-name').innerHTML = 'Presión Manga';
+          diastole.innerHTML = data.value;
         } else if (data.type == 'nibp') {
           monitorResult = data.value.split('S');
-          systole.innerHTML = monitorResult[0];
-          diastole.innerHTML = monitorResult[1];
-          map.innerHTML = monitorResult[2];
+          document.getElementById('diastole-name').innerHTML = 'Presión Diastólica';
+          if ((parseInt(monitorResult[0]) > 0) && (parseInt(monitorResult[0]) <= 200)) {
+            systole.innerHTML = monitorResult[0];
+          } else {
+            systole.innerHTML = '...';
+          }
+          if ((parseInt(monitorResult[1]) > 0) && (parseInt(monitorResult[1]) <= 200)) {
+            diastole.innerHTML = monitorResult[1];
+          } else {
+            diastole.innerHTML = '...';
+          }
+          if ((parseInt(monitorResult[2]) > 0) && (parseInt(monitorResult[2]) <= 200)) {
+            map.innerHTML = monitorResult[2];
+          } else {
+            map.innerHTML = '...';
+          }
         } else if (data.type == 'websocket') {
           websocket = true;
           monitorResult = data.value.split('S');
@@ -1088,7 +1171,8 @@ if (CURRENT_FRAME == '/measure/') {
           diastole.innerHTML = monitorResult[6];
           map.innerHTML = monitorResult[7];
           ecgData = data.ecg_wave;
-          ecgLiveWaveGraph(ecgData, false);
+          ecgLiveData = ecgData;
+          ecgLiveWaveGraph(false);
           socket.close();
         } else {
           console.log('Websocket error :(');
@@ -1129,15 +1213,16 @@ if (CURRENT_FRAME == '/measure/') {
     console.log('Sending data...');
     const dataToSend = {
       patient: {id:parseInt(localStorage.getItem('userId'))},
-      RR: rr.innerHTML,
-      SPO2: spo2.innerHTML,
-      Pulse: hrSpo2.innerHTML,
-      Systolic: systole.innerHTML,
-      Diastolic: diastole.innerHTML,
-      MAP: map.innerHTML,
+      RR: rr.innerHTML == '...' ? 0 : parseInt(rr.innerHTML),
+      SPO2: spo2.innerHTML == '...' ? 0 : parseInt(spo2.innerHTML),
+      Pulse: hrSpo2.innerHTML == '...' ? 0 : parseInt(hrSpo2.innerHTML),
+      Systolic: systole.innerHTML == '...' ? 0 : parseInt(systole.innerHTML),
+      Diastolic: diastole.innerHTML == '...' ? 0 : parseInt(diastole.innerHTML),
+      MAP: map.innerHTML == '...' ? 0 : parseInt(map.innerHTML),
       ECG: ecg_wave_data,
-      Temperature: temp.innerHTML
+      Temperature: temp.innerHTML == '...' ? 0 : parseFloat(temp.innerHTML)
     };
+    console.log(dataToSend);
     function successFunction() {
       console.log('Data sended :)');
       localStorage.setItem('alertId',3);
@@ -1215,7 +1300,7 @@ if (CURRENT_FRAME == '/medicine/') {
   // const medicineData = getMethod(URI+'/pharmacotherapies/users/'+localStorage.getItem('userId'));
   const medicines = document.getElementById('medicine-div');
   let newDiv, newH3, newUl1, newLi, liDosage, newUl2, newLi0, nLi1, nLi2, nLi3, hour, tmpHour;
-  if(medicineData) {
+  if (medicineData) {
     for (let i=0; i<medicineData.length; i++) {
       newDiv = createCustomElement('div','card padding-10 margin-bottom-20','','');
       newH3 = createCustomElement('h3','margin-bottom-20','',medicineData[i].drugName);
