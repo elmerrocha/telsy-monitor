@@ -1,0 +1,220 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<!-- Vertical Slider -->
+		<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+		<!-- Telsy -->
+		<link rel="stylesheet" href="{% static 'css/telsy.css' %}">
+		<!-- Fontawesome -->
+		<link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+		<!-- Animate -->
+		<link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+		<!-- Icon -->
+		<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}">
+		<title>Telsy Hogar</title>
+	</head>
+	<body>
+		<div class="container-fluid p-0 black high-100">
+			<div class="row no-gutters p-0 high-100">
+				<div class="col-12 p-0 my-auto">
+				<!-- Container Interface -->
+				<div class="screen main-medium">
+					<!-- Inner Container -->
+						<div class="container-fluid p-0">
+							<div class="row header no-gutters p-0">
+								<div class="col title d-flex flex-row">
+									<div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-data.png' %}"></div>
+									<h1>Monitoreando...</h1>
+								</div>
+								<div class="col-fifth navigation d-flex justify-content-end">
+									<a href="#" class="button button rectangle r120 red d-flex justify-content-between me-5" style="width: auto;" onclick="stopButton()">
+										<div class="icon">
+											<img src="{% static 'images/icons/equis-white.png' %}">
+										</div>
+										<p class="label txt-white">Detener</p>
+									</a>
+									<a href="/menu/" class="button square s60 gradient-1">
+										<div class="icon"><img src="{% static 'images/icons/ico-nav.png' %}"></div>
+									</a>
+								</div>
+							</div>
+							<div class="row main-content no-gutters p-0">
+								<div class="col ms-2 my-auto" id="signs-div">
+									{% if measure_type == 'spo2' or measure_type == 'monitor' %}
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img src="{% static 'images/icons/ico-spo2.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Saturación oxígeno</p>
+													<h2 class="d-inline" id="spo2">...</h2>
+													<p class="d-inline">&nbsp;%</p>
+												</div>
+											</div>
+										</div>
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img src="{% static 'images/icons/ico-ekg-2.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Pulso</p>
+													<h2 class="d-inline" id="hr-spo2">...</h2>
+													<p class="d-inline">&nbsp;bpm</p>
+												</div>
+											</div>
+										</div>
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img src="{% static 'images/icons/ico-thermometer.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Temperatura</p>
+													<h2 class="d-inline" id="temp">...</h2>
+													<p class="d-inline">&nbsp;°C</p>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+									{% if measure_type == 'nibp' or measure_type == 'monitor' %}
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img src="{% static 'images/icons/ico-pni.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Presión Sistólica</p>
+													<h2 class="d-inline" id="systole">...</h2>
+													<p class="d-inline">&nbsp;mmHg</p>
+												</div>
+											</div>
+										</div>
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img src="{% static 'images/icons/ico-pni.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Presión Diastólica</p>
+													<h2 class="d-inline" id="diastole">...</h2>
+													<p class="d-inline">&nbsp;mmHg</p>
+												</div>
+											</div>
+										</div>
+										<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img  src="{% static 'images/icons/ico-pni.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Presión Media</p>
+													<h2 class="d-inline" id="map">...</h2>
+													<p class="d-inline">&nbsp;mmHg</p>
+												</div>
+											</div>
+										</div>
+										{% if measure_type != 'monitor' %}
+											<div class="d-flex justify-content-center me-4" id="nibp-cuff">
+												<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+													<div class="d-flex align-items-center">
+														<div class="ico my-auto">
+															<img src="{% static 'images/icons/ico-pni.png' %}">
+														</div>
+														<div class="content my-auto margin-left-10">
+															<p>Presión Manga</p>
+															<h2 class="d-inline" id="cuff">...</h2>
+															<p class="d-inline">&nbsp;mmHg</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
+									{% endif %}
+									{% if measure_type == 'ecg' or measure_type == 'monitor' %}
+										<div class="d-flex justify-content-center">
+											<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+												<div class="d-flex align-items-center">
+													<div class="ico my-auto">
+														<img src="{% static 'images/icons/ico-ekg.png' %}">
+													</div>
+													<div class="content my-auto margin-left-10">
+														<p >Frec. Cardíaca</p>
+														<h2 class="d-inline" id="hr-ecg">...</h2>
+														<p class="d-inline">&nbsp;bpm</p>
+													</div>
+												</div>
+											</div>
+											<div class="card card-data bor bor-grey bor-med padding-4 m-1">
+												<div class="d-flex align-items-center">
+													<div class="ico my-auto">
+														<img src="{% static 'images/icons/ico-resp.png' %}">
+													</div>
+													<div class="content my-auto margin-left-10">
+														<p>Frec. Respiratoria</p>
+														<h2 class="d-inline" id="rr">...</h2>
+														<p class="d-inline">&nbsp;brpm</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="card card-ecg-data bor bor-grey bor-med padding-4">
+											<div class="row">
+												<div class="col-4">
+													<div class="d-flex align-items-center">
+														<div class="ico my-auto mt-2">
+															<img src="/static/images/icons/ico-ecg.png">
+														</div>
+														<div class="content my-auto margin-left-10 mt-3">
+															<p>Electrocardiograma</p>
+														</div>
+													</div>
+												</div>
+												<div class="col-8">
+													<canvas width="460" height="60" id="ecg-wave"></canvas>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+									<!-- {% if measure_type != 'monitor' %}
+									<div class="col d-flex justify-content-center mt-5 me-4">
+										<a href="#" class="button button rectangle r120 red d-flex justify-content-between" style="width: auto;" onclick="stopButton()">
+											<div class="icon">
+												<img src="{% static 'images/icons/equis-white.png' %}">
+											</div>
+											<p class="label txt-white">Detener</p>
+										</a>
+									</div>
+									{% endif %} -->
+								</div>
+							</div>
+							<!-- End Inner -->
+						</div>
+						<!-- End Contenedor -->
+					</div>
+				</div>
+			</div>
+		</div>
+		{% if measure_type != 'ecg' or measure_type != 'monitor' %}
+			<div class="visually-hidden">
+				<canvas width="460" height="60" id="ecg-wave"></canvas>
+			</div>
+		{% endif %}
+		<span class="visually-hidden" id="measure-type">{{measure_type}}</span>
+		<!-- Bootstrap -->
+		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+		<!-- Fontawesome -->
+		<script src="{% static 'js/fontawesome.min.js' %}"></script>
+		<!-- jQuery -->
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+		<!-- Telsy -->
+		<script src="{% static 'js/telsy.js' %}"></script>
+	</body>
+</html>

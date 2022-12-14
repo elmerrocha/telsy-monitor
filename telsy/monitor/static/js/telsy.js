@@ -1,7 +1,7 @@
 /**************************************************************************************************/
-// Fundacion Cardiovascular de Colombia
+// Fundación Cardiovascular de Colombia
 // Proyecto Telsy
-// Telsy Hogar v07.09.2022
+// Telsy Hogar v14.12.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
@@ -9,8 +9,7 @@
 const CONNECTION  = window.navigator.onLine;
 const CURRENT_FRAME = document.location.pathname;
 const URI = 'http://3.233.48.181:8082/api/v1'; // Public
-// const URI = 'http://172.30.19.105:8082/api/v1'; // FCV
-const LOCAL_URI = 'http://localhost:8000/battery' // Battery service
+const LOCAL_URI = `http://${window.location.host}/battery`; // Battery service
 /**************************************************************************************************/
 /* Global functions  */
 /**************************************************************************************************/
@@ -166,24 +165,25 @@ function loadActivities() {
       new Splide( '#splide-tasks', {
         type:'slide',
         direction: 'ttb',
-        height: '280px',
-        perPage:3,
+        height: '356px',
+        perPage: 3,
         perMove: 1,
+        drag: true,
+        wheel: true,
         pagination:false,
-        padding: 0,
-    } ).mount();
+    }).mount();
     });
   }
   const iconsList = {
     'SYMPTOMS_AM'     : '/static/images/icons/ico-assistant-question.png',
     'WEIGHT'          : '/static/images/icons/ico-weight.png',
     'PHARMACOTHERAPY' : '/static/images/icons/ico-medicine.png',
-    'EXERCISE'        : '/static/images/icons/ico-excercise.png',
+    'EXERCISE'        : '/static/images/icons/ico-exercise.png',
     'MONITORING'      : '/static/images/icons/ico-monitoring.png',
     'SYMPTOMS_PM'     : '/static/images/icons/ico-assistant-question2.png',
     'GOALS'           : '/static/images/icons/ico-goals.png'
   };
-  function iconUrl(key,medicamentName) {
+  function urlIcon(key,medicamentName) {
     const icons = {
       'SYMPTOMS_AM'     : '/symptoms/?morning=true',
       'WEIGHT'          : '/weight/',
@@ -235,7 +235,7 @@ function loadActivities() {
     divActivities.innerHTML = '';//Clear activities list
     for (let i=0; i<activities.length; i++) {
       const activityExecution = activities[i]['execution'].split('T')[1].split(':')[0];
-      const iconHref = iconUrl(activities[i]['type'], activities[i]['description']);
+      const iconHref = urlIcon(activities[i]['type'], activities[i]['description']);
       const newLi = createCustomElement('li','splide__slide','','');
       if (activityExecution == today.getHours()) {
         // Flag activity with current time
@@ -337,6 +337,11 @@ if (CURRENT_FRAME == '/cancel/') {
 /* Connected */
 /**************************************************************************************************/
 if (CURRENT_FRAME == '/connected/') {
+  const networkName = localStorage.getItem('network-name');
+  document.getElementById('network-name').innerHTML = networkName;
+  function acceptConnection() {
+    localStorage.removeItem('network-name');
+  }
   if (CONNECTION && lastActivitiesUpdate()) saveActivities();
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
 }
@@ -344,7 +349,7 @@ if (CURRENT_FRAME == '/connected/') {
 /* Connecting */
 /**************************************************************************************************/
 function showPasswordNetwork() {
-  const pass = document.getElementById('network-password');
+  const pass = document.getElementById('network-pass');
   if (pass.type == 'password') {
     pass.type = 'text';
   } else {
@@ -352,97 +357,103 @@ function showPasswordNetwork() {
   }
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
 }
+if (CURRENT_FRAME == '/connecting/') {
+  const networkName = localStorage.getItem('network-name');
+  document.getElementById('network-name').innerHTML = networkName
+  document.getElementById('network-ssid').value = networkName;
+
+}
 /**************************************************************************************************/
 /* Data */
 /**************************************************************************************************/
-if (CURRENT_FRAME == '/data/') {
-  const signsData = getMethod(URI+'/vitalsignrecords/last');
-  const ecgWaveData = signsData['ECG'];
-  const vitalSigns = ['Pulse', 'SPO2', 'RR', 'Systolic', 'Diastolic', 'MAP'];
-  const signsDiv = document.getElementById('signs-div');
-  let newDiv1, newDiv2, newDiv3, newImg, newDiv4, newP1, newH2, newP2, newP3;
-  let divEcg0, divEcg1, divEcg2, divEcg3, imgEcg, pEcg0, pEcg1, canvasEcg;
-  const signIcon = {
-    'RR': '/static/images/icons/ico-resp.png',
-    'SPO2': '/static/images/icons/ico-spo2.png',
-    'Pulse': '/static/images/icons/ico-ekg-2.png',
-    'Systolic': '/static/images/icons/ico-pni.png',
-    'Diastolic': '/static/images/icons/ico-pni.png',
-    'MAP': '/static/images/icons/ico-pni.png'
-  };
-  const signText = {
-    'RR': 'Frec. Respiratoria',
-    'SPO2': 'Saturación oxígeno',
-    'Pulse': 'Pulso',
-    'Systolic': 'Presión Sistólica',
-    'Diastolic': 'Presión Diastólica',
-    'MAP': 'Presión Media'
-  };
-  const signUnit = {
-    'RR': 'bpm',
-    'SPO2': '%',
-    'Pulse': 'bpm',
-    'Systolic': 'mmHg',
-    'Diastolic': 'mmHg',
-    'MAP': 'mmHg'
-  };
-  for (let i=0; i<vitalSigns.length; i++) {
-    if ((signsData[vitalSigns[i]]) && (parseInt(signsData[vitalSigns[i]]) != 0)) {
-      newDiv1 = createCustomElement('div','card card-data bor bor-grey bor-med padding-4 m-1','','');
-      newDiv2 = createCustomElement('div','d-flex align-items-center','','');
-      newDiv3 = createCustomElement('div','ico my-auto','','');
-      newImg = createCustomElement('img','','','');
-      newImg.src = signIcon[vitalSigns[i]];
-      newDiv4 = createCustomElement('div','content my-auto margin-left-10','','')
-      newP1 = createCustomElement('p','','',signText[vitalSigns[i]]);
-      newH2 = createCustomElement('h2','d-inline','',signsData[vitalSigns[i]]+' ');
-      newP2 = createCustomElement('p','d-inline','',signUnit[vitalSigns[i]]);
-      newP3 = createCustomElement('p','small txt-grey-dark','','<span>Fecha: </span> '+customizeDate(signsData.createdAt));
+// if (CURRENT_FRAME == '/data/') {
+//   const signsData = getMethod(URI+'/vitalsignrecords/last');
+//   const ecgWaveData = signsData['ECG'];
+//   const vitalSigns = ['Pulse', 'SPO2', 'RR', 'Systolic', 'Diastolic', 'MAP'];
+//   const signsDiv = document.getElementById('signs-div');
+//   let newDiv1, newDiv2, newDiv3, newImg, newDiv4, newP1, newH2, newP2, newP3;
+//   let divEcg0, divEcg1, divEcg2, divEcg3, imgEcg, pEcg0, pEcg1, canvasEcg;
+//   const signIcon = {
+//     'RR': '/static/images/icons/ico-resp.png',
+//     'SPO2': '/static/images/icons/ico-spo2.png',
+//     'Pulse': '/static/images/icons/ico-ekg-2.png',
+//     'Systolic': '/static/images/icons/ico-pni.png',
+//     'Diastolic': '/static/images/icons/ico-pni.png',
+//     'MAP': '/static/images/icons/ico-pni.png'
+//   };
+//   const signText = {
+//     'RR': 'Frec. Respiratoria',
+//     'SPO2': 'Saturación oxígeno',
+//     'Pulse': 'Pulso',
+//     'Systolic': 'Presión Sistólica',
+//     'Diastolic': 'Presión Diastólica',
+//     'MAP': 'Presión Media'
+//   };
+//   const signUnit = {
+//     'RR': 'bpm',
+//     'SPO2': '%',
+//     'Pulse': 'bpm',
+//     'Systolic': 'mmHg',
+//     'Diastolic': 'mmHg',
+//     'MAP': 'mmHg'
+//   };
+//   for (let i=0; i<vitalSigns.length; i++) {
+//     if ((signsData[vitalSigns[i]]) && (parseInt(signsData[vitalSigns[i]]) != 0)) {
+//       newDiv1 = createCustomElement('div','card card-data bor bor-grey bor-med padding-4 m-1','','');
+//       newDiv2 = createCustomElement('div','d-flex align-items-center','','');
+//       newDiv3 = createCustomElement('div','ico my-auto','','');
+//       newImg = createCustomElement('img','','','');
+//       newImg.src = signIcon[vitalSigns[i]];
+//       newDiv4 = createCustomElement('div','content my-auto margin-left-10','','')
+//       newP1 = createCustomElement('p','','',signText[vitalSigns[i]]);
+//       newH2 = createCustomElement('h2','d-inline','',signsData[vitalSigns[i]]+' ');
+//       newP2 = createCustomElement('p','d-inline','',signUnit[vitalSigns[i]]);
+//       newP3 = createCustomElement('p','small txt-grey-dark','','<span>Fecha: </span> '+customizeDate(signsData.createdAt));
 
-      newDiv4.appendChild(newP1);
-      newDiv4.appendChild(newH2);
-      newDiv4.appendChild(newP2);
-      newDiv4.appendChild(newP3);
-      newDiv3.appendChild(newImg);
-      newDiv2.appendChild(newDiv3);
-      newDiv2.appendChild(newDiv4);
-      newDiv1.appendChild(newDiv2);
-      signsDiv.appendChild(newDiv1);
-    }
-  }
-  function customizeDate(currentDate) {
-    const date = currentDate.split('T')[0].split('-');
-    return date[2]+'/'+date[1]+'/'+date[0];
-  }
-  // ECG Canvas
-  if (signsData['ECG'] != '0') {
-    divEcg0 = createCustomElement('div','card card-data3 bor bor-grey bor-med padding-4 m-1','','');
-    divEcg1 = createCustomElement('div','d-flex align-items-center','','');
-    divEcg2 = createCustomElement('div','ico my-auto','','');
-    imgEcg = createCustomElement('img','','','');
-    imgEcg.src = '/static/images/icons/ico-ekg.png';
-    divEcg3 = createCustomElement('div','content my-auto margin-left-10','','');
-    pEcg0 = createCustomElement('p','','','Electrocardiograma');
-    pEcg1 = createCustomElement('p','small txt-grey-dark','','<span>Fecha: </span> '+customizeDate(signsData.createdAt));
-    canvasEcg = document.createElement('canvas');
-    canvasEcg.width = 469;
-    canvasEcg.height = 40;
-    canvasEcg.id='canvas';
+//       newDiv4.appendChild(newP1);
+//       newDiv4.appendChild(newH2);
+//       newDiv4.appendChild(newP2);
+//       newDiv4.appendChild(newP3);
+//       newDiv3.appendChild(newImg);
+//       newDiv2.appendChild(newDiv3);
+//       newDiv2.appendChild(newDiv4);
+//       newDiv1.appendChild(newDiv2);
+//       signsDiv.appendChild(newDiv1);
+//     }
+//   }
+//   function customizeDate(currentDate) {
+//     const date = currentDate.split('T')[0].split('-');
+//     return date[2]+'/'+date[1]+'/'+date[0];
+//   }
+//   // ECG Canvas
+//   if (signsData['ECG'] != '0') {
+//     divEcg0 = createCustomElement('div','card card-data3 bor bor-grey bor-med padding-4 m-1','','');
+//     divEcg1 = createCustomElement('div','d-flex align-items-center','','');
+//     divEcg2 = createCustomElement('div','ico my-auto','','');
+//     imgEcg = createCustomElement('img','','','');
+//     imgEcg.src = '/static/images/icons/ico-ekg.png';
+//     divEcg3 = createCustomElement('div','content my-auto margin-left-10','','');
+//     pEcg0 = createCustomElement('p','','','Electrocardiograma');
+//     pEcg1 = createCustomElement('p','small txt-grey-dark','','<span>Fecha: </span> '+customizeDate(signsData.createdAt));
+//     canvasEcg = document.createElement('canvas');
+//     canvasEcg.width = 469;
+//     canvasEcg.height = 40;
+//     canvasEcg.id='canvas';
 
-    divEcg2.appendChild(imgEcg);
-    divEcg3.appendChild(pEcg0);
-    divEcg3.appendChild(pEcg1);
-    divEcg1.appendChild(divEcg2);
-    divEcg1.appendChild(divEcg3);
-    divEcg0.appendChild(divEcg1);
-    divEcg0.appendChild(canvasEcg);
-    signsDiv.appendChild(divEcg0);
+//     divEcg2.appendChild(imgEcg);
+//     divEcg3.appendChild(pEcg0);
+//     divEcg3.appendChild(pEcg1);
+//     divEcg1.appendChild(divEcg2);
+//     divEcg1.appendChild(divEcg3);
+//     divEcg0.appendChild(divEcg1);
+//     divEcg0.appendChild(canvasEcg);
+//     signsDiv.appendChild(divEcg0);
 
-    //ECG Wave
-    ecgWave(ecgWaveData);
-  }
-  setTimeout(backHome,60000);//Wait for 1 minute to redirect
-}
+//     //ECG Wave
+//     ecgWave(ecgWaveData);
+//   }
+//   setTimeout(backHome,60000);//Wait for 1 minute to redirect
+// }
 /**************************************************************************************************/
 /* Exercise */
 /**************************************************************************************************/
@@ -507,10 +518,10 @@ if (CURRENT_FRAME == '/goals/') {
       }
     }
   }
-  document.getElementById('Selfcare').innerHTML = putDescription(goalsData,1);
-  document.getElementById('Exercise').innerHTML = putDescription(goalsData,2);
-  document.getElementById('Diets').innerHTML = putDescription(goalsData,3);
-  document.getElementById('Quality').innerHTML = putDescription(goalsData,4);
+  document.getElementById('selfcare').innerHTML = putDescription(goalsData,1);
+  document.getElementById('exercise').innerHTML = putDescription(goalsData,2);
+  document.getElementById('diets').innerHTML = putDescription(goalsData,3);
+  document.getElementById('life-quality').innerHTML = putDescription(goalsData,4);
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
 }
 /**************************************************************************************************/
@@ -520,10 +531,19 @@ if (CURRENT_FRAME == '/goalsd/') {
   const urlId = new URLSearchParams(window.location.search);
   const goalId = parseInt(urlId.get('id'));
   const goalData = JSON.parse(localStorage.getItem('goals'));
+  const goalImg = document.getElementById('goals-details-image');
+  const goalImages = [
+    '',
+    '/static/images/assistant/assistant-smile-small-1.png',
+    '/static/images/assistant/assistant-exercise.png',
+    '/static/images/assistant/assistant-diet.png',
+    '/static/images/assistant/assistant-hi-1.png',
+  ];
   for (let i=0; i<goalData.length; i++) {
     if (goalData[i]['id'] == goalId) {
       document.getElementById('goal-description').innerHTML = goalData[i]['detail'];
       document.getElementById('goal-video').href = '/goalsv/?id='+goalId;
+      document.getElementById('goals-details-image').src = goalImages[goalId];
     }
   }
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
@@ -554,7 +574,7 @@ if (CURRENT_FRAME == '/home/') {
     'fa-battery-half', //40 <= % < 60
     'fa-battery-three-quarters', //60 <= & < 80
     'fa-battery-full', //% > 80
-    'fa-battery-full', //% == 100
+    'fa-battery-full-green', //% == 100
     '' //null
   ];
   function updateDate() {
@@ -600,7 +620,7 @@ if (CURRENT_FRAME == '/home/') {
       return amPm;
     }
     if ((today.getHours() == 0) && (today.getMinutes() >= 55)) {
-      // Update next day acitivites at 00:55
+      // Update next day activities at 00:55
       saveActivities();
     }
     setTimeout(updateDate,5000);//It updates every 5 seconds.
@@ -616,16 +636,18 @@ if (CURRENT_FRAME == '/home/') {
     capacity = getMethod(LOCAL_URI);
     if (capacity.power_ac) {
       if (capacity.capacity >= 99) {
-        battery.className = 'fa-charging-station2';
-      }
-      else {
+        battery.className = 'fa-charging-station-green';
+      } else {
         battery.className = 'fa-charging-station';
       }
-    }
-    else {
+    } else if (capacity.capacity >= 99) {
+      battery.className = 'fa-battery-full-green';
+    } else {
       battery.className = batteryClassNames[parseInt(capacity.capacity/20)];
     }
-    setTimeout(batteryCapacity,5000); //It updates every 5 seconds.
+    if (!((capacity.power_ac) && (capacity.capacity == 120))) {
+      setTimeout(batteryCapacity,5000); //It updates every 5 seconds.
+    }
   }
   function homeAlert() {
     const alertId = parseInt(localStorage.getItem('alertId'));
@@ -661,7 +683,7 @@ if (CURRENT_FRAME == '/home/') {
       case 4://Exercise
         alertText.innerHTML = 'Hiciste '+localStorage.getItem('exerciseTime')+' minutos de ejercicio';
         alertUrl.onclick = function() {clickButton('/home/');};
-        alertImage.src = '/static/images/assistant/assitant-excercise-I.png';
+        alertImage.src = '/static/images/assistant/assistant-exercise-I.png';
         alertHide.className = 'row';
         break;
       case 5://Weight
@@ -747,9 +769,10 @@ if (CURRENT_FRAME == '/login/') {
       password: document.getElementById('user-password').value
     };
     $.ajax({
-      url: URI.substring(0,25)+'/auth/signin',
+      url: URI.replace('/api/v1','') + '/auth/signin',
       method: 'POST',
       dataType: 'json',
+      crossDomain: true,
       contentType: 'application/json',
       data: JSON.stringify(credentials),
       async: false,
@@ -778,6 +801,216 @@ if (CURRENT_FRAME == '/login/') {
     }
   }
   setTimeout(backHome,120000);//Wait for 2 minute to redirect
+}
+/**************************************************************************************************/
+/* Measure */
+/**************************************************************************************************/
+if (CURRENT_FRAME == '/measure/') {
+  const measureType = document.getElementById('measure-type').innerHTML;
+  let URL = `ws://${window.location.host}/ws/socket/`;
+  let socket, ecgData, live_graph, hrEcg, rr, spo2, hrSpo2, temp, systole, diastole, map, cuff, nibpCuff, graph;
+  //ECG Wave
+  const ECG_COLOR = '#00FF00';
+  const ecgLiveWave = document.getElementById('ecg-wave');
+  const ecgCtx = ecgLiveWave.getContext('2d');
+  const graphWidth = ecgLiveWave.width;
+  const graphHeight = ecgLiveWave.height;
+  let ecgX = 0, ecgpX = 0, ecgY = graphHeight, ecgpY = graphHeight, i = 0;
+  ecgCtx.strokeStyle = ECG_COLOR;
+  ecgCtx.lineWidth = 2;
+  ecgCtx.setTransform(1, 0, 0, -1, 0, graphHeight);
+  const scanBarWidth = 7;
+  const step = 0.5;
+  function drawEcg() {
+    ecgX += step;
+    ecgCtx.clearRect(ecgX, 0, scanBarWidth, graphHeight);
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(ecgpX, ecgpY);
+    ecgCtx.lineJoin= 'round';
+    if (live_graph) {
+      ecgY = ecgData/(4096/graphHeight);//4096 is the max possible value
+    } else {
+      ecgY = (ecgData[++i >= ecgData.length ? i=0 : i++]/(2048/graphHeight))-(graphHeight/1.5);
+    }
+    ecgCtx.lineTo(ecgX, ecgY);
+    ecgCtx.stroke();
+    ecgpX = ecgX;
+    ecgpY = ecgY;
+    if (ecgpX > graphWidth) {
+        ecgX = ecgpX = -step;
+    }
+    if (!live_graph && graph) {
+      requestAnimationFrame(drawEcg);
+    }
+  }
+
+  switch(measureType) {
+    case 'spo2':
+      spo2 = document.getElementById('spo2');
+      hrSpo2 = document.getElementById('hr-spo2');
+      temp = document.getElementById('temp');
+      URL += 'spo2';
+      let spo2Tmp;
+      socket = new WebSocket(URL);
+      socket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        if (data.type == 'temp') {
+            temp.innerHTML = data.value;
+        } else if (data.type == 'spo2') {
+            spo2Tmp = data.value.split('S');
+            spo2.innerHTML = spo2Tmp[0];
+            hrSpo2.innerHTML = spo2Tmp[1];
+        } else if (data.type == 'websocket') {
+          spo2Tmp = data.value.split('S');
+          spo2.innerHTML = spo2Tmp[0];
+          hrSpo2.innerHTML = spo2Tmp[1];
+          temp.innerHTML = spo2Tmp[2];
+          socket.close();
+        } else {
+          console.log('Websocket error :(');
+          console.log(data);
+        }
+      }
+      break;
+
+    case 'nibp':
+      systole = document.getElementById('systole');
+      diastole = document.getElementById('diastole');
+      map = document.getElementById('map');
+      cuff = document.getElementById('cuff');
+      nibpCuff = document.getElementById('nibp-cuff');
+      URL += 'nibp';
+      let nibpResult;
+      socket = new WebSocket(URL);
+      socket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        if (data.type == 'cuff') {
+          cuff.innerHTML = data.value;
+        } else if (data.type == 'nibp') {
+          nibpResult = data.value.split('S');
+          systole.innerHTML = nibpResult[0];
+          diastole.innerHTML = nibpResult[1];
+          map.innerHTML = nibpResult[2];
+          nibpCuff.className = 'visually-hidden';
+        } else if (data.type == 'websocket') {
+          nibpResult = data.value.split('S');
+          systole.innerHTML = nibpResult[0];
+          diastole.innerHTML = nibpResult[1];
+          map.innerHTML = nibpResult[2];
+          nibpCuff.className = 'visually-hidden';
+          socket.close();
+        } else {
+          console.log('Websocket error :(');
+          console.log(data);
+        }
+      }
+      break;
+
+    case 'ecg':
+      hrEcg = document.getElementById('hr-ecg');
+      rr = document.getElementById('rr');
+      graph = true;
+      URL += 'ecg';
+      let ecgResult;
+      socket = new WebSocket(URL);
+      socket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        if (data.type == 'ecg') {
+          ecgData = data.value;
+          live_graph = true;
+          drawEcg();
+        } else if (data.type == 'hr') {
+            hrEcg.innerHTML = data.value;
+        } else if (data.type == 'rr') {
+            rr.innerHTML = data.value;
+        } else if (data.type == 'websocket') {
+          ecgResult = data.value.split('S');
+          hrEcg.innerHTML = ecgResult[0];
+          rr.innerHTML = ecgResult[1];
+          ecgData = data.ecg_wave;
+          live_graph = false;
+          drawEcg();
+          socket.close();
+        } else {
+          console.log('Websocket error :(');
+          console.log(data);
+        }
+      }
+      break;
+
+    case 'monitor':
+      hrEcg = document.getElementById('hr-ecg');
+      rr = document.getElementById('rr');
+      spo2 = document.getElementById('spo2');
+      hrSpo2 = document.getElementById('hr-spo2');
+      temp = document.getElementById('temp');
+      systole = document.getElementById('systole');
+      diastole = document.getElementById('diastole');
+      map = document.getElementById('map');
+      graph = true;
+      URL += 'monitor';
+      let monitorResult;
+      socket = new WebSocket(URL);
+      socket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        if (data.type == 'ecg') {
+          ecgData = data.value;
+          live_graph = true;
+          drawEcg();
+        } else if (data.type == 'hr') {
+          hrEcg.innerHTML = data.value;
+        } else if (data.type == 'rr') {
+          rr.innerHTML = data.value;
+        } else if (data.type == 'temp') {
+          temp.innerHTML = data.value;
+        } else if (data.type == 'spo2') {
+          monitorResult = data.value.split('S');
+          spo2.innerHTML = monitorResult[0];
+          hrSpo2.innerHTML = monitorResult[1];
+        } else if (data.type == 'cuff') {
+          map.innerHTML = data.value;
+        } else if (data.type == 'nibp') {
+          monitorResult = data.value.split('S');
+          systole.innerHTML = monitorResult[0];
+          diastole.innerHTML = monitorResult[1];
+          map.innerHTML = monitorResult[2];
+        } else if (data.type == 'websocket') {
+          monitorResult = data.value.split('S');
+          hrEcg.innerHTML = monitorResult[0];
+          rr.innerHTML = monitorResult[1];
+          spo2.innerHTML = monitorResult[2];
+          hrSpo2.innerHTML = monitorResult[3];
+          temp.innerHTML = monitorResult[4];
+          systole.innerHTML = monitorResult[5];
+          diastole.innerHTML = monitorResult[6];
+          map.innerHTML = monitorResult[7];
+          ecgData = data.ecg_wave;
+          live_graph = false;
+          drawEcg();
+          socket.close();
+        } else {
+          console.log('Websocket error :(');
+          console.log(data);
+        }
+      }
+      break;
+
+    default:
+      break;
+  }
+  function stopButton() {
+    graph = false;
+    socket.close();
+    $.ajax({
+      url: `http://${window.location.host}/measure/`,
+      method: 'OPTIONS',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({stop:true}),
+      async: false,
+      timeout: 3000
+    });
+  }
 }
 /**************************************************************************************************/
 /* Measuring */
@@ -904,45 +1137,50 @@ if (CURRENT_FRAME == '/monitor/') {
 if (CURRENT_FRAME == '/monitoring/') {
   const urlI = new URLSearchParams(window.location.search);
   const index = parseInt(urlI.get('s'));
-  const unic = parseInt(urlI.get('u'));
+  const unic_measure = parseInt(urlI.get('u'));
   const signsList = [
     {
       'title' : 'Electrocardiograma',
       'sensor': '/static/images/illustrations/monitoring-sensor-ekg.png',
       'person': '/static/images/illustrations/monitoring-ekg.png',
       'button': 'Continuar',
-      'class' : 'button square s60 yellow margin-right-20'
+      'class' : 'button square s60 yellow margin-right-20',
+      'type'  : 'ecg'
     }, {
       'title' : 'Presión arterial',
       'sensor': '/static/images/illustrations/monitoring-sensor-pni.png',
       'person': '/static/images/illustrations/monitoring-pni.png',
       'button': 'Continuar',
-      'class' : 'button square s60 yellow margin-right-20'
+      'class' : 'button square s60 yellow margin-right-20',
+      'type'  : 'nibp'
     }, {
       'title' : 'Pulso oximetría',
       'sensor': '/static/images/illustrations/monitoring-sensor-spo2.png',
       'person': '/static/images/illustrations/monitoring-spo2.png',
       'button': 'Continuar',
-      'class' : 'button square s60 yellow margin-right-20'
+      'class' : 'button square s60 yellow margin-right-20',
+      'type'  : 'spo2'
     }, {
       'title' : 'Empezar monitoreo',
       'sensor': '/static/images/illustrations/monitoring-sensor-all.png',
       'person': '/static/images/illustrations/monitoring-all2.png',
       'button': 'Empezar',
-      'class' : 'row-hidden'
+      'class' : 'row-hidden',
+      'type'  : 'monitor'
     }
   ];
   document.getElementById('sign-title').innerHTML = signsList[index]['title'];
   document.getElementById('sensor-img').src = signsList[index]['sensor'];
   document.getElementById('person-img').src = signsList[index]['person'];
   document.getElementById('info-button').className = signsList[index]['class'];
-  if (unic) {
+  document.getElementById('measure-type').value = signsList[index]['type'];
+  if (unic_measure) {
     document.getElementById('next-button').innerHTML = 'Empezar';
   } else {
     document.getElementById('next-button').innerHTML = signsList[index]['button'];
   }
   function backButton() {
-    if (unic) {
+    if (unic_measure) {
       window.location.href= '/menu/'
     } else {
       if (index == 0) {
@@ -953,16 +1191,10 @@ if (CURRENT_FRAME == '/monitoring/') {
     }
   }
   function nextButton() {
-    if (unic) {
-      if (index == 1) {
-        document.getElementById('measure-value').value=1;
-      } else {
-        document.getElementById('measure-value').value=0;
-      }
+    if (unic_measure) {
       document.getElementById('start-measuring').submit();
     } else {
       if (index == signsList.length-1) {
-        document.getElementById('measure-value').value=1;
         document.getElementById('start-measuring').submit();
       } else {
         window.location.href= '/monitoring/?s='+(index+1)+'&u=0';
@@ -1051,14 +1283,19 @@ if (CURRENT_FRAME == '/network/') {
   new Splide( '#splide-network', {
     type:'slide',
     direction: 'ttb',
-    height: '210px',
-    autoHeight: true,
-    perPage:3,
+    height: '200px',
+    perPage: 3,
     perMove: 1,
+    drag: true,
+    wheel: true,
     pagination:false,
   }).mount();
   function reloadPage() {
     window.location.href = '/network/';
+  }
+  function connectToNetwork(networkName) {
+    localStorage.setItem('network-name', networkName);
+    window.location.href = '/connecting/';
   }
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
 }

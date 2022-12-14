@@ -1,9 +1,11 @@
 '''
-Fundacion Cardiovascular de Colombia
+Fundación Cardiovascular de Colombia
+Dirección de Innovación y Desarrollo Tecnológico
 Proyecto Telsy
-Telsy Hogar v07.09.2022
+Telsy Hogar v14.12.2022
 Ing. Elmer Rocha Jaime
 '''
+
 from os import system
 from subprocess import Popen, PIPE
 from wifi import Cell

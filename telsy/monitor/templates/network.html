@@ -5,17 +5,18 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<!-- CSS Bootstrap and vertical Slider  -->
-		<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+		<!-- Bootstrap -->
 		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<!-- Vertical Slider -->
+		<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+		<!-- Telsy -->
+		<link rel="stylesheet" href="{% static 'css/telsy.css' %}">
 		<!-- Fontawesome -->
-		<link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
 		<!-- Animate -->
-		<link rel="stylesheet" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
 		<!-- Icon -->
 		<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}">
-		<!-- CSS  -->
-		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 		<title>Telsy Hogar</title>
 	</head>
 	<body>
@@ -25,58 +26,57 @@
 					<!-- Container Interface -->
 					<div class="screen main-medium">
 						<!-- Inner Container -->
-						<div class="container-fluid p-0"  style="height: 440px; position: relative;">
+						<div class="container-fluid p-0">
 							<div class="row header no-gutters p-0">
 								<div class="col title d-flex flex-row">
 									<div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-wifi.png' %}"></div>
 									<h1>Configurar red</h1>
 								</div>
 								<div class="col-fifth navigation d-flex justify-content-end">
-									<a href="/menu/" class="button square s60 gradient-1 margin-right-20">
+									<a href="/menu/" class="button square s60 gradient-1">
 										<div class="icon"><img src="{% static 'images/icons/ico-nav.png' %}"></div>
-									</a>
-									<a class="button circle c60 red">
-										<div class="icon"><img src="{% static 'images/icons/ico-nurse.png' %}"></div>
 									</a>
 								</div>
 							</div>
-							<div class="row main-content no-gutters p-0 justify-content-between">
+							<div class="col main-content no-gutters d-flex justify-content-between">
 								<div class="col-6 d-flex align-items-center">
 									<div class="container-fluid p-0">
 										<div class="row no-gutters p-0 d-flex align-items-center justify-content-between margin-bottom-10">
-											<h3>Redes disponibles</h3>
-											<a href="#" onclick="reloadPage()" class="button rectangle r140 gradient-vertical d-flex align-items-center" style="width: 35%;">
+											<h3 class="col-7">Redes disponibles</h3>
+											<a href="#" onclick="reloadPage()" class="col-5 button rectangle r140 gradient-vertical d-flex align-items-center" style="width: 35%;">
 												<p class="label text-left">Buscar</p>
 												<div class="icon margin-left-10">
 													<img src="{% static 'images/icons/ico-reload.png' %}">
 												</div>
 											</a>
 										</div>
-										<div class="row no-gutters p-0">
-											<div class="scroll selection network bor-grey">
-												<div id="splide-network" class="splide">
-													<div class="splide__arrows">
-														<button class="splide__arrow p-splide__arrow splide__arrow--prev p-splide__arrow--prev " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-															<div class="btn-scroll up gradient-vertical">
-																<img src="{% static 'images/icons/chevron-up.png' %}">
-															</div>
-														</button>
-														<button class="splide__arrow p-splide__arrow splide__arrow--next p-splide__arrow--next " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-															<div class="btn-scroll down gradient-vertical">
-																<img src="{% static 'images/icons/chevron-up.png' %}">
-															</div>
-														</button>
-													</div>
-													<div class="splide__track">
-														<ul class="splide__list" id="network_list">
+										<div class="row scroll selection network mx-auto">
+											<div class="splide" id="splide-network">
+												<div class="splide__track">
+													<ul class="splide__list" id="network_list">
+														{% for net in networks %}
 															<li class="splide__slide">
-															{% for net in networks %}
-																<li class="splide__slide">
-																<a href="/connecting/{{net}}" class="card-select d-flex justify-content-between padding-10"><p class="label my-auto">{{net}}</p><div class="button circle c40 gradient-1 my-auto"><img src="{% static 'images/icons/chevron-right.png'%}"></div></a>
+																<a href="#" onclick="connectToNetwork('{{net}}')" class="col d-flex justify-content-between p-1">
+																	<p class="label my-auto">{{net}}</p>
+																	<div class="button circle c40 gradient-1 my-auto">
+																		<img src="{% static 'images/icons/chevron-right.png' %}">
+																	</div>
+																</a>
 															</li>
-															{% endfor %}
-														</ul>
-													</div>
+														{% endfor %}
+													</ul>
+												</div>
+												<div class="splide__arrows">
+													<button class="splide__arrow splide__arrow--prev w-100">
+														<div class="btn-scroll up gradient-vertical">
+															<img src="{% static 'images/icons/chevron-up.png' %}">
+														</div>
+													</button>
+													<button class="splide__arrow splide__arrow--next w-100">
+														<div class="btn-scroll down gradient-vertical">
+															<img src="{% static 'images/icons/chevron-up.png' %}">
+														</div>
+													</button>
 												</div>
 											</div>
 										</div>
@@ -94,10 +94,15 @@
 				</div>
 			</div>
 		</div>
-		<!-- Scripts -->
-		<script src="{% static 'js/jquery-3.4.1.slim.min.js' %}"></script>
+		<!-- Bootstrap -->
 		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+		<!-- Vertical Splide -->
 		<script src="{% static 'js/splide.min.js' %}"></script>
+		<!-- Fontawesome -->
+		<script src="{% static 'js/fontawesome.min.js' %}"></script>
+		<!-- jQuery -->
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+		<!-- Telsy -->
 		<script src="{% static 'js/telsy.js' %}"></script>
 	</body>
 </html>

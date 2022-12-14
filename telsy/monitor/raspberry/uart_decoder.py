@@ -1,7 +1,8 @@
 '''
-Fundacion Cardiovascular de Colombia
+Fundación Cardiovascular de Colombia
+Dirección de Innovación y Desarrollo Tecnológico
 Proyecto Telsy
-Telsy Hogar v07.09.2022
+Telsy Hogar v14.12.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -106,12 +107,12 @@ def ecg_wave(data):  # 0x05
     # flargs = str(pace_flarg) + 'S' + str(heart_beate_flarg)
     ecg1_h = (data[1] & 0x3F) << 8
     ecg1_l = ((data[0] & 0x02) << 6) | (data[2] & 0x7F)
-    # ecg2_h = (((data[0] & 0x04) <<5) | (data[3] & 0x7F)) << 8
-    # ecg2_l =  ((data[0] & 0x08) <<4) | (data[4] & 0x7F)
-    # ecg3_h = (((data[0] & 0x10) <<3) | (data[5] & 0x7F)) << 8
-    # ecg3_l =  ((data[0] & 0x20) <<2) | (data[6] & 0x7F)
+    ecg2_h = (((data[0] & 0x04) <<5) | (data[3] & 0x7F)) << 8
+    ecg2_l =  ((data[0] & 0x08) <<4) | (data[4] & 0x7F)
+    ecg3_h = (((data[0] & 0x10) <<3) | (data[5] & 0x7F)) << 8
+    ecg3_l =  ((data[0] & 0x20) <<2) | (data[6] & 0x7F)
     ###########################################################################
-    return str(ecg1_h | ecg1_l)
+    return str(ecg1_h | ecg1_l)#+'S'+str(ecg2_h | ecg2_l)+'S'+str(ecg3_h | ecg3_l)
 
 
 def ecg_status(data):  # 0x06
@@ -180,7 +181,7 @@ def heart_rate(data):  # 0x07
     r_h = (((data[0] & 0x04) << 5) | (data[3] & 0x7F)) << 8
     r_l = ((data[0] & 0x08) << 4) | (data[4] & 0x7F)
     ###########################################################################
-    return str(hr_h | hr_l)+'S'+str(r_h | r_l)
+    return str(hr_h | hr_l)#+'S'+str(r_h | r_l)
 
 
 def arrhythmia(data):  # 0x0A
@@ -342,7 +343,7 @@ def temperature(data):  # 0x15
     t2_l = ((data[0] & 0x10) << 3) | (data[5] & 0x7F)
     status = str(t1_s)+'S'+str(t2_s)
     ###########################################################################
-    return str((t1_h | t1_l)/10)+'S'+str((t2_h | t2_l)/10)+'*'+status
+    return str((t1_h | t1_l)/10)#+'S'+str((t2_h | t2_l)/10)+'*'+status
 
 
 def spo2_wave(data):  # 0x16
@@ -370,15 +371,16 @@ def spo2_wave(data):  # 0x16
     # 0x7F : 0111 1111
     ###########################################################################
     spo2_wave = ((data[0] & 0x01) << 7) | (data[1] & 0x7F)
-    bar_graph = data[2] & 0x0F
-    sensor_status = str((data[2] & 0x10) >> 4)
-    search_flarg = str((data[2] & 0x20) >> 5)
-    pulse_flarg = str((data[2] & 0x40) >> 6)
-    finger = str(data[0] & 0x02)
-    spo2_1 = str(spo2_wave)+'S'+str(bar_graph)
-    spo2_2 = sensor_status+'S'+search_flarg+'S'+pulse_flarg+'S'+finger
+    # bar_graph = data[2] & 0x0F
+    # sensor_status = str((data[2] & 0x10) >> 4)
+    # search_flarg = str((data[2] & 0x20) >> 5)
+    # pulse_flarg = str((data[2] & 0x40) >> 6)
+    # finger = str(data[0] & 0x02)
+    # spo2_1 = str(spo2_wave)+'S'+str(bar_graph)
+    # spo2_2 = sensor_status+'S'+search_flarg+'S'+pulse_flarg+'S'+finger
     ###########################################################################
-    return spo2_1+'*'+spo2_2
+    # return spo2_1+'*'+spo2_2
+    return str(spo2_wave)
 
 
 def spo2(data):  # 0x17
@@ -418,6 +420,7 @@ def spo2(data):  # 0x17
     spo2 = ((data[0] & 0x08) << 4) | (data[4] & 0x7F)
     ###########################################################################
     return str(spo2)+'S'+str(pr_h | pr_l)
+    # return str(pr_h | pr_l)
 
 
 def nibp_cuff(data):  # 0x20
@@ -452,7 +455,7 @@ def nibp_cuff(data):  # 0x20
     wrong_flag = data[3] & 0x01
     measure_mode = data[3] & 0x7F
     ###########################################################################
-    return str(cuff_h | cuff_l)+'S'+str(wrong_flag)+'S'+str(measure_mode)
+    return str(cuff_h | cuff_l)#+'S'+str(wrong_flag)+'S'+str(measure_mode)
 
 
 def nibp_end(data):  # 0x21
