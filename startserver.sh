@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd telsy-monitor/telsy
-sudo python3 manage.py runserver --insecure
+python manage.py runserver --insecure

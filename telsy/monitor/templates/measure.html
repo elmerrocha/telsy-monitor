@@ -33,11 +33,11 @@
 									<h1>Monitoreando...</h1>
 								</div>
 								<div class="col-fifth navigation d-flex justify-content-end">
-									<a href="#" class="button button rectangle r120 red d-flex justify-content-between me-5" style="width: auto;" onclick="stopButton()">
+									<a id="a-button" href="#" class="button button rectangle r120 red d-flex justify-content-between me-5" style="width: auto;" onclick="stopButton()">
 										<div class="icon">
-											<img src="{% static 'images/icons/equis-white.png' %}">
+											<img id="img-button" src="{% static 'images/icons/equis-white.png' %}">
 										</div>
-										<p class="label txt-white">Detener</p>
+										<p id="text-button" class="label txt-white">Detener</p>
 									</a>
 									<a href="/menu/" class="button square s60 gradient-1">
 										<div class="icon"><img src="{% static 'images/icons/ico-nav.png' %}"></div>

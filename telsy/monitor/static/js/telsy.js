@@ -88,10 +88,52 @@ function completeActivity() {
 }
 function createCustomElement(element,elementClass,elementId,content) {
   const customElement = document.createElement(element);
-  customElement.className = elementClass;
-  customElement.id = elementId;
+  if (elementClass.length > 0) {
+    customElement.className = elementClass;
+  }
+  if (elementId.length > 0) {
+    customElement.id = elementId;
+  }
   customElement.innerHTML = content;
   return customElement;
+}
+let ecg_live_graph;
+function ecgLiveWaveGraph(ecgData, live_graph) {
+  //ECG Wave
+  const ECG_COLOR = '#00FF00';
+  const ecgLiveWave = document.getElementById('ecg-wave');
+  const ecgCtx = ecgLiveWave.getContext('2d');
+  const graphWidth = ecgLiveWave.width;
+  const graphHeight = ecgLiveWave.height;
+  let ecgX = 0, ecgpX = 0, ecgY = graphHeight, ecgpY = graphHeight, i = 0;
+  ecgCtx.strokeStyle = ECG_COLOR;
+  ecgCtx.lineWidth = 2;
+  ecgCtx.setTransform(1, 0, 0, -1, 0, graphHeight);
+  const scanBarWidth = 7;
+  const step = 0.5;
+  function drawEcg() {
+    ecgX += step;
+    ecgCtx.clearRect(ecgX, 0, scanBarWidth, graphHeight);
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(ecgpX, ecgpY);
+    ecgCtx.lineJoin= 'round';
+    if (live_graph) {
+      ecgY = ecgData/(4096/graphHeight);//4096 is the max possible value
+    } else {
+      ecgY = (ecgData[++i >= ecgData.length ? i=0 : i++]/(2048/graphHeight))-(graphHeight/1.5);
+    }
+    ecgCtx.lineTo(ecgX, ecgY);
+    ecgCtx.stroke();
+    ecgpX = ecgX;
+    ecgpY = ecgY;
+    if (ecgpX > graphWidth) {
+        ecgX = ecgpX = -step;
+    }
+    if (!live_graph && ecg_live_graph) {
+      requestAnimationFrame(drawEcg);
+    }
+  }
+  drawEcg();
 }
 function ecgWave(waveData) {
   const canvas = document.getElementById('canvas');
@@ -355,7 +397,7 @@ function showPasswordNetwork() {
   } else {
     pass.type = 'password';
   }
-  setTimeout(backHome,60000);//Wait for 1 minute to redirect
+  setTimeout(backHome,120000);//Wait for 2 minute to redirect
 }
 if (CURRENT_FRAME == '/connecting/') {
   const networkName = localStorage.getItem('network-name');
@@ -366,6 +408,85 @@ if (CURRENT_FRAME == '/connecting/') {
 /**************************************************************************************************/
 /* Data */
 /**************************************************************************************************/
+if (CURRENT_FRAME == '/data/') {
+  const signsData = getMethod(URI+'/vitalsignrecords/last');
+  const weightTelsyData = getMethod(URI+'/weigthrecords/last');
+  const spo2 = document.getElementById('spo2');
+  const hrSpo2 = document.getElementById('hr-spo2');
+  const temp = document.getElementById('temp');
+  const systole = document.getElementById('systole');
+  const diastole = document.getElementById('diastole');
+  const map = document.getElementById('map');
+  const hrEcg = document.getElementById('hr-ecg');
+  const rr = document.getElementById('rr');
+  const weight = document.getElementById('weight');
+  const cardClass = 'card card-data bor bor-grey bor-med padding-4 m-1';
+  const cardEcgClass = 'card card-ecg-data bor bor-grey bor-med padding-4';
+
+  function customizeDate(currentDate) {
+    const date = currentDate.split('T')[0].split('-');
+    return date[2]+'/'+date[1]+'/'+date[0];
+  }
+
+  const spo2Data = signsData.SPO2;
+  const hrSpo2Data = signsData.Pulse;
+  const tempData = signsData.Temperature;
+  const systoleData = signsData.Systolic;
+  const diastoleData = signsData.Diastolic;
+  const mapData = signsData.MAP;
+  const hrEcgData = parseInt(localStorage.getItem('hrEcg'));
+  const rrData = signsData.RR;
+  const weightData = weightTelsyData.weigth;
+  const ecgRecordData = signsData.ECG;
+  const signsDate = customizeDate(signsData.createdAt);
+
+  const allRecordDate = document.getElementsByClassName('record-date');
+  for(let i = 0; i < allRecordDate.length; i++) {
+    allRecordDate[i].innerHTML = signsDate;
+  }
+  if (spo2Data && (spo2Data > 0) && (spo2Data <= 100)) {
+    spo2.innerHTML = spo2Data;
+    document.getElementById('spo2-card').className = cardClass;
+  }
+  if (hrSpo2Data && (hrSpo2Data > 0) && (hrSpo2Data <= 200)) {
+    hrSpo2.innerHTML = hrSpo2Data;
+    document.getElementById('hr-spo2-card').className = cardClass;
+  }
+  if (tempData && (tempData > 0) && (tempData <= 100)) {
+    temp.innerHTML = tempData;
+    document.getElementById('temp-card').className = cardClass;
+  }
+  if (systoleData && (systoleData > 0) && (systoleData <= 200)) {
+    systole.innerHTML = systoleData;
+    document.getElementById('systole-card').className = cardClass;
+  }
+  if (diastoleData && (diastoleData > 0) && (diastoleData <= 200)) {
+    diastole.innerHTML = diastoleData;
+    document.getElementById('diastole-card').className = cardClass;
+  }
+  if (mapData && (mapData > 0) && (mapData <= 200)) {
+    map.innerHTML = mapData;
+    document.getElementById('map-card').className = cardClass;
+  }
+  if (hrEcgData && (hrEcgData > 0) && (hrEcgData <= 100)) {
+    hrEcg.innerHTML = hrEcgData;
+    document.getElementById('hr-ecg-card').className = cardClass;
+  }
+  if (rrData && (rrData > 0) && (rrData <= 100)) {
+    rr.innerHTML = rrData;
+    document.getElementById('rr-card').className = cardClass;
+  }
+  if (weightData && (weightData > 0) && (weightData <= 200)) {
+    weight.innerHTML = weightData;
+    document.getElementById('weight-card').className = cardClass;
+  }
+  if (ecgRecordData && (ecgRecordData.length > 0)) {
+    ecg_live_graph = true;
+    ecgLiveWaveGraph(ecgRecordData.split(','), false);
+    document.getElementById('ecg-wave-card').className = cardEcgClass;
+  }
+  setTimeout(backHome,60000);//Wait for 1 minute to redirect
+}
 // if (CURRENT_FRAME == '/data/') {
 //   const signsData = getMethod(URI+'/vitalsignrecords/last');
 //   const ecgWaveData = signsData['ECG'];
@@ -808,41 +929,8 @@ if (CURRENT_FRAME == '/login/') {
 if (CURRENT_FRAME == '/measure/') {
   const measureType = document.getElementById('measure-type').innerHTML;
   let URL = `ws://${window.location.host}/ws/socket/`;
-  let socket, ecgData, live_graph, hrEcg, rr, spo2, hrSpo2, temp, systole, diastole, map, cuff, nibpCuff, graph;
-  //ECG Wave
-  const ECG_COLOR = '#00FF00';
-  const ecgLiveWave = document.getElementById('ecg-wave');
-  const ecgCtx = ecgLiveWave.getContext('2d');
-  const graphWidth = ecgLiveWave.width;
-  const graphHeight = ecgLiveWave.height;
-  let ecgX = 0, ecgpX = 0, ecgY = graphHeight, ecgpY = graphHeight, i = 0;
-  ecgCtx.strokeStyle = ECG_COLOR;
-  ecgCtx.lineWidth = 2;
-  ecgCtx.setTransform(1, 0, 0, -1, 0, graphHeight);
-  const scanBarWidth = 7;
-  const step = 0.5;
-  function drawEcg() {
-    ecgX += step;
-    ecgCtx.clearRect(ecgX, 0, scanBarWidth, graphHeight);
-    ecgCtx.beginPath();
-    ecgCtx.moveTo(ecgpX, ecgpY);
-    ecgCtx.lineJoin= 'round';
-    if (live_graph) {
-      ecgY = ecgData/(4096/graphHeight);//4096 is the max possible value
-    } else {
-      ecgY = (ecgData[++i >= ecgData.length ? i=0 : i++]/(2048/graphHeight))-(graphHeight/1.5);
-    }
-    ecgCtx.lineTo(ecgX, ecgY);
-    ecgCtx.stroke();
-    ecgpX = ecgX;
-    ecgpY = ecgY;
-    if (ecgpX > graphWidth) {
-        ecgX = ecgpX = -step;
-    }
-    if (!live_graph && graph) {
-      requestAnimationFrame(drawEcg);
-    }
-  }
+  let socket, hrEcg, rr, spo2, hrSpo2, temp, systole, diastole, map, cuff, nibpCuff;
+  let websocket = false, ecg_wave_data = '';
 
   switch(measureType) {
     case 'spo2':
@@ -861,6 +949,7 @@ if (CURRENT_FRAME == '/measure/') {
             spo2.innerHTML = spo2Tmp[0];
             hrSpo2.innerHTML = spo2Tmp[1];
         } else if (data.type == 'websocket') {
+          websocket = true;
           spo2Tmp = data.value.split('S');
           spo2.innerHTML = spo2Tmp[0];
           hrSpo2.innerHTML = spo2Tmp[1];
@@ -870,6 +959,9 @@ if (CURRENT_FRAME == '/measure/') {
           console.log('Websocket error :(');
           console.log(data);
         }
+      }
+      socket.onclose = function(e) {
+        setTimeout(backHome,60000);//Wait for 1 minute to redirect
       }
       break;
 
@@ -893,6 +985,7 @@ if (CURRENT_FRAME == '/measure/') {
           map.innerHTML = nibpResult[2];
           nibpCuff.className = 'visually-hidden';
         } else if (data.type == 'websocket') {
+          websocket = true;
           nibpResult = data.value.split('S');
           systole.innerHTML = nibpResult[0];
           diastole.innerHTML = nibpResult[1];
@@ -904,12 +997,15 @@ if (CURRENT_FRAME == '/measure/') {
           console.log(data);
         }
       }
+      socket.onclose = function(e) {
+        setTimeout(backHome,60000);//Wait for 1 minute to redirect
+      }
       break;
 
     case 'ecg':
       hrEcg = document.getElementById('hr-ecg');
       rr = document.getElementById('rr');
-      graph = true;
+      ecg_live_graph = true;
       URL += 'ecg';
       let ecgResult;
       socket = new WebSocket(URL);
@@ -917,24 +1013,28 @@ if (CURRENT_FRAME == '/measure/') {
         let data = JSON.parse(e.data);
         if (data.type == 'ecg') {
           ecgData = data.value;
-          live_graph = true;
-          drawEcg();
+          ecgLiveWaveGraph(ecgData, true);
         } else if (data.type == 'hr') {
             hrEcg.innerHTML = data.value;
+            localStorage.setItem('hrEcg', data.value);
         } else if (data.type == 'rr') {
             rr.innerHTML = data.value;
         } else if (data.type == 'websocket') {
+          websocket = true;
           ecgResult = data.value.split('S');
           hrEcg.innerHTML = ecgResult[0];
+          localStorage.setItem('hrEcg', ecgResult[0]);
           rr.innerHTML = ecgResult[1];
           ecgData = data.ecg_wave;
-          live_graph = false;
-          drawEcg();
+          ecgLiveWaveGraph(ecgData, false);
           socket.close();
         } else {
           console.log('Websocket error :(');
           console.log(data);
         }
+      }
+      socket.onclose = function(e) {
+        setTimeout(backHome,60000);//Wait for 1 minute to redirect
       }
       break;
 
@@ -947,7 +1047,7 @@ if (CURRENT_FRAME == '/measure/') {
       systole = document.getElementById('systole');
       diastole = document.getElementById('diastole');
       map = document.getElementById('map');
-      graph = true;
+      ecg_live_graph = true;
       URL += 'monitor';
       let monitorResult;
       socket = new WebSocket(URL);
@@ -955,10 +1055,11 @@ if (CURRENT_FRAME == '/measure/') {
         let data = JSON.parse(e.data);
         if (data.type == 'ecg') {
           ecgData = data.value;
-          live_graph = true;
-          drawEcg();
+          ecg_wave_data += ecgData +',';
+          ecgLiveWaveGraph(ecgData, true);
         } else if (data.type == 'hr') {
           hrEcg.innerHTML = data.value;
+          localStorage.setItem('hrEcg', data.value);
         } else if (data.type == 'rr') {
           rr.innerHTML = data.value;
         } else if (data.type == 'temp') {
@@ -975,8 +1076,10 @@ if (CURRENT_FRAME == '/measure/') {
           diastole.innerHTML = monitorResult[1];
           map.innerHTML = monitorResult[2];
         } else if (data.type == 'websocket') {
+          websocket = true;
           monitorResult = data.value.split('S');
           hrEcg.innerHTML = monitorResult[0];
+          localStorage.setItem('hrEcg', monitorResult[0]);
           rr.innerHTML = monitorResult[1];
           spo2.innerHTML = monitorResult[2];
           hrSpo2.innerHTML = monitorResult[3];
@@ -985,12 +1088,23 @@ if (CURRENT_FRAME == '/measure/') {
           diastole.innerHTML = monitorResult[6];
           map.innerHTML = monitorResult[7];
           ecgData = data.ecg_wave;
-          live_graph = false;
-          drawEcg();
+          ecgLiveWaveGraph(ecgData, false);
           socket.close();
         } else {
           console.log('Websocket error :(');
           console.log(data);
+        }
+      }
+      socket.onclose = function(e) {
+        if (!websocket) {
+          document.getElementById('a-button').classList.remove('red');
+          document.getElementById('a-button').classList.add('green');
+          document.getElementById('a-button').onclick = sendVitalSigns;
+          document.getElementById('img-button').src = '/static/images/icons/arrow-right-white.png'
+          document.getElementById('text-button').innerHTML = 'Enviar';
+          setTimeout(sendVitalSigns,10000);
+        } else {
+          setTimeout(backHome,60000);//Wait for 1 minute to redirect
         }
       }
       break;
@@ -999,7 +1113,7 @@ if (CURRENT_FRAME == '/measure/') {
       break;
   }
   function stopButton() {
-    graph = false;
+    ecg_live_graph = false;
     socket.close();
     $.ajax({
       url: `http://${window.location.host}/measure/`,
@@ -1010,6 +1124,30 @@ if (CURRENT_FRAME == '/measure/') {
       async: false,
       timeout: 3000
     });
+  }
+  function sendVitalSigns() {
+    console.log('Sending data...');
+    const dataToSend = {
+      patient: {id:parseInt(localStorage.getItem('userId'))},
+      RR: rr.innerHTML,
+      SPO2: spo2.innerHTML,
+      Pulse: hrSpo2.innerHTML,
+      Systolic: systole.innerHTML,
+      Diastolic: diastole.innerHTML,
+      MAP: map.innerHTML,
+      ECG: ecg_wave_data,
+      Temperature: temp.innerHTML
+    };
+    function successFunction() {
+      console.log('Data sended :)');
+      localStorage.setItem('alertId',3);
+      if (localStorage.getItem('activityId')) {
+        completeActivity();
+      } else {
+        window.location.href = '/home/';
+      }
+    }
+    // postMethod(URI+'/vitalsignrecords',dataToSend,successFunction);
   }
 }
 /**************************************************************************************************/

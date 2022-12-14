@@ -29,156 +29,187 @@
 						<div class="container-fluid p-0">
 							<div class="row header no-gutters p-0">
 								<div class="col title d-flex flex-row">
-									<div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-data.png' %}"></div>
+									<div class="icon my-auto margin-right-10">
+										<img src="{% static 'images/icons/ico-data.png' %}">
+									</div>
 									<h1>Tus últimos datos</h1>
 								</div>
 								<div class="col-fifth navigation d-flex justify-content-end">
 									<a href="/menu/" class="button square s60 gradient-1">
-										<div class="icon"><img src="{% static 'images/icons/ico-nav.png' %}"></div>
+										<div class="icon">
+											<img src="{% static 'images/icons/ico-nav.png' %}">
+										</div>
 									</a>
 								</div>
 							</div>
 							<div class="row main-content no-gutters p-0">
 								<div class="col ms-2" id="signs-div">
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-ekg.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Frec. Cardíaca</p>
-												<h2 class="d-inline" id="">72 </h2>
-												<p class="d-inline" id="">bpm</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="spo2-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-spo2.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Saturación oxígeno</p>
+												<h2 class="d-inline" id="spo2">...</h2>
+												<p class="d-inline">&nbsp;%</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-spo2.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Saturación oxígeno</p>
-												<h2 class="d-inline" id="">98 </h2>
-												<p class="d-inline" id="">%</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="hr-spo2-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-ekg-2.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Pulso</p>
+												<h2 class="d-inline" id="hr-spo2">...</h2>
+												<p class="d-inline">&nbsp;bpm</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-ekg-2.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Pulso</p>
-												<h2 class="d-inline" id="">72 </h2>
-												<p class="d-inline" id="">bpm</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="temp-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-thermometer.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Temperatura</p>
+												<h2 class="d-inline" id="temp">...</h2>
+												<p class="d-inline">&nbsp;°C</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-resp.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Frec. Respiratoria</p>
-												<h2 class="d-inline" id="">30 </h2>
-												<p class="d-inline" id="">brpm</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="systole-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-pni.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Presión Sistólica</p>
+												<h2 class="d-inline" id="systole">...</h2>
+												<p class="d-inline">&nbsp;mmHg</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-thermometer.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Temperatura</p>
-												<h2 class="d-inline" id="">36.0 </h2>
-												<p class="d-inline" id="">°C</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="diastole-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-pni.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Presión Diastólica</p>
+												<h2 class="d-inline" id="diastole">...</h2>
+												<p class="d-inline">&nbsp;mmHg</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-weight.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Peso</p>
-												<h2 class="d-inline" id="">65.2 </h2>
-												<p class="d-inline" id="">kg</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="map-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-pni.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Presión Media</p>
+												<h2 class="d-inline" id="map">...</h2>
+												<p class="d-inline">&nbsp;mmHg</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-pni.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Presión Sistólica</p>
-												<h2 class="d-inline" id="">120 </h2>
-												<p class="d-inline" id="">mmHg</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="hr-ecg-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-ekg.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Frec. Cardíaca</p>
+												<h2 class="d-inline" id="hr-ecg">...</h2>
+												<p class="d-inline">&nbsp;bpm</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-pni.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Presión Diastólica</p>
-												<h2 class="d-inline" id="">80 </h2>
-												<p class="d-inline" id="">mmHg</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="rr-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-resp.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Frec. Respiratoria</p>
+												<h2 class="d-inline" id="rr">...</h2>
+												<p class="d-inline">&nbsp;brpm</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-data bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-pni.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Presión Media</p>
-												<h2 class="d-inline" id="">93 </h2>
-												<p class="d-inline" id="">mmHg</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+									<div class="visually-hidden" id="weight-card">
+										<div class="d-flex align-items-center">
+											<div class="ico my-auto">
+												<img src="{% static 'images/icons/ico-weight.png' %}">
+											</div>
+											<div class="content my-auto margin-left-10">
+												<p>Peso</p>
+												<h2 class="d-inline" id="weight">...</h2>
+												<p class="d-inline">&nbsp;kg</p>
+												<p class="small txt-grey-dark">
+													<span class="bold-text">Fecha:&nbsp;</span>
+													<span class="record-date">dd/mm/yyyy</span>
+												</p>
 											</div>
 										</div>
 									</div>
-									<div class="card card-ecg-data bor bor-grey bor-med padding-4">
+									<div class="visually-hidden" id="ecg-wave-card">
 										<div class="row">
 											<div class="col-4">
-												<div class="d-flex align-items-center" id="">
-													<div class="ico my-auto" id=""><img class="" id=""
-															src="/static/images/icons/ico-ecg.png"></div>
-													<div class="content my-auto margin-left-10" id="">
-														<p class="" id="">Electrocardiograma</p>
-														<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
+												<div class="d-flex align-items-center">
+													<div class="ico my-auto">
+														<img src="{% static 'images/icons/ico-ecg.png' %}">
+													</div>
+													<div class="content my-auto margin-left-10">
+														<p>Electrocardiograma</p>
+														<p class="small txt-grey-dark">
+															<span class="bold-text">Fecha:&nbsp;</span>
+															<span class="record-date">dd/mm/yyyy</span>
+														</p>
 														<h3>&nbsp</h3>
 													</div>
 												</div>
 											</div>
 											<div class="col-8">
-												<div class="border border-danger">
-													<canvas width="500" height="60" id="canvas"></canvas>
-												</div>
+												<canvas width="460" height="60" id="ecg-wave"></canvas>
 											</div>
 										</div>
 									</div>
-									<!--
-									<div class="card card-data3 bor bor-grey bor-med padding-4 m-1" id="">
-										<div class="d-flex align-items-center" id="">
-											<div class="ico my-auto" id=""><img class="" id=""
-													src="/static/images/icons/ico-ekg.png"></div>
-											<div class="content my-auto margin-left-10" id="">
-												<p class="" id="">Electrocardiograma</p>
-												<p class="small txt-grey-dark" id=""><span>Fecha: </span> 25/11/2022</p>
-											</div>
-										</div><canvas width="469" height="40" id="canvas"></canvas>
-									</div> -->
 								</div>
 							</div>
 							<!-- End Inner -->
