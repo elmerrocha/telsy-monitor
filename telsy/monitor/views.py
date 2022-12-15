@@ -228,6 +228,15 @@ def symptoms(request):
     return render(request, 'symptoms.html')
 
 
+def update_monitor(request):
+    ''' Update firmware view '''
+    if is_raspberry_pi_os():
+        update_firmware()
+        return render(request, 'update.html')
+    else:
+        return render(request, 'error.html')
+
+
 def user(request):
     ''' User view '''
     return render(request, 'user.html')

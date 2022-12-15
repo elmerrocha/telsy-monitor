@@ -40,81 +40,31 @@
 							</div>
 							<div class="row main-content no-gutters p-0">
 								<div class="col">
-									<!-- Main Content -->
-									<div class="container-fluid p-0 h-100">
-										<div class="row no-gutters p-0 h-100">
-											<div class="col-12 d-flex flex-column align-items-end ">
-												<div class="container-fluid mb-auto ">
-													<div class="row no-gutters p-0">
-														<div class="illustration my-auto">
-															<img class="img" style="width: 50%;" src="{% static 'images/telsyhogar.png' %}">
-														</div>
-														<div class="col mt-2 ml-3">
-															{% if connection %}
-																<h4 class="row">Dirección IP:
-																	<code class="d-inline ml-1">{{ip}}</code>
-																</h4>
-																<h4 class="row mb-2">Dirección MAC:
-																	<code class="d-inline ml-1">{{mac}}</code>
-																</h4>
-															{% endif %}
-															{% if localVersion and localDate %}
-																<h4 class="row">Versión:
-																	<code class="d-inline ml-1">{{localVersion}}</code>
-																</h4>
-																<h4 class="row">Fecha:
-																	<code class="d-inline ml-1">{{localDate}}</code>
-																</h4>
-															{% endif %}
-															{% if updatable %}
-																<h4 class="row mt-2">Existe una nueva versión:</h4>
-																<h4 class="row">Versión:
-																	<code class="d-inline ml-1">{{remoteVersion}}</code>
-																</h4>
-																<h4 class="row mb-2">Fecha:
-																	<code class="d-inline ml-1">{{remoteDate}}</code>
-																</h4>
-																<div class="row d-flex justify-content-center">
-																	<a href="/update/" class="button rectangle d-flex align-items-center" style="background-color:#722ea2;">
-																		<div class="icon">
-																			<img src="{% static 'images/icons/ico-update.png' %}">
-																		</div>
-																		<p class="label txt-white">Actualizar</p>
-																	</a>
-																</div>
-															{% endif %}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
+									<div class="illustration my-auto">
+										<img class="img" style="width: 35%;" src="{% static 'images/telsyhogar.png' %}">
 									</div>
-									<!--End Main Content -->
-								</div>
-								<div class="col-fifth">
-									<!-- Sidebar with Task list-->
-									<div class="card sidebar-tasks main-light bor-grey">
-										<!-- Tasks Slide -->
-										<div id="splide-tasks" class="splide">
-											<div class="splide__arrows">
-												<button class="splide__arrow splide__arrow--prev " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-													<div class="btn-scroll up gradient-vertical">
-														<img src="{% static 'images/icons/chevron-up.png' %}">
+									<div class="row mt-2">
+										{% if connection %}
+											<h4>Dirección IP: <code>{{ip}}</code></h4>
+											<h4>Dirección MAC: <code>{{mac}}</code></h4>
+										{% endif %}
+										{% if localVersion and localDate %}
+											<h4>Versión: <code>{{localVersion}}</code></h4>
+											<h4>Fecha: <code>{{localDate}}</code></h4>
+										{% endif %}
+										{% if updatable %}
+											<h4 class="mt-4">Existe una nueva versión:</h4>
+											<h4>Versión: <code>{{remoteVersion}}</code></h4>
+											<h4>Fecha: <code>{{remoteDate}}</code></h4>
+											<div class="d-flex ms-5 mt-3">
+												<a href="/update/" class="button rectangle d-flex align-items-center" style="background-color:#722ea2;">
+													<div class="icon">
+														<img src="{% static 'images/icons/ico-update.png' %}">
 													</div>
-												</button>
-												<button class="splide__arrow splide__arrow--next " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-													<div class="btn-scroll down gradient-vertical">
-														<img src="{% static 'images/icons/chevron-up.png' %}">
-													</div>
-												</button>
+													<p class="label txt-white">Actualizar</p>
+												</a>
 											</div>
-											<div class="splide__track">
-												<ul class="splide__list" id="splide-list">
-													<!-- Activities list -->
-												</ul>
-											</div>
-										</div>
-										<!--End Slide Tasks -->
+										{% endif %}
 									</div>
 								</div>
 							</div>

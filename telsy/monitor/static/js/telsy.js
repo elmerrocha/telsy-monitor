@@ -884,8 +884,8 @@ if (CURRENT_FRAME == '/') {
 /* Information */
 /**************************************************************************************************/
 if (CURRENT_FRAME == '/information/') {
-  loadActivities();
-  setTimeout(backHome, 60000);//Wait for 1 minute to redirect
+  // loadActivities();
+  // setTimeout(backHome, 60000);//Wait for 1 minute to redirect
 }
 /**************************************************************************************************/
 /* Login */
@@ -1200,6 +1200,7 @@ if (CURRENT_FRAME == '/measure/') {
     case 'gauge':
       const gauge = document.getElementById('gauge');
       document.getElementById('measure-title').innerHTML = 'Manómetro';
+      document.getElementById('measure-ico').src = '/static/images/icons/ico-pressure-gauge.png';
       URL += 'gauge';
       socket = new WebSocket(URL);
       socket.onmessage = function(e) {

@@ -9,7 +9,6 @@ Ing. Elmer Rocha Jaime
 from django.urls import path
 from monitor import views
 
-
 app_name = 'monitor'
 urlpatterns = [
     path('battery/', views.battery),
@@ -34,6 +33,7 @@ urlpatterns = [
     path('monitoringinfov/',views.monitoring_info_video),
     path('network/',views.network),
     path('symptoms/',views.symptoms),
+    path('update/', views.update_monitor),
     path('user/', views.user),
     path('weight/',views.weight),
     path('weightc/',views.weight_confirmation),
