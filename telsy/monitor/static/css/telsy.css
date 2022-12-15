@@ -2,7 +2,7 @@
 Fundación Cardiovascular de Colombia
 Dirección de Innovación y Desarrollo Tecnológico
 Proyecto Telsy
-Telsy Hogar v14.12.2022
+Telsy Hogar v15.12.2022
 Ing. Elmer Rocha Jaime
 */
 
@@ -887,9 +887,28 @@ p.small {
 }
 
 /* Splide */
-.splide__track {
+.splide__slide {
+	width: 100%
+}
+
+.row>.splide>.splide__track {
 	top: 50px;
 }
+
+.card>.splide>.splide__track {
+	top: 30px!important;
+	padding-bottom: 30px!important;
+}
+
+
+/* .splide__list {
+	height: 346px;
+} */
+
+/* #splide-list.splide__list {
+	margin-top: 50px!important;
+	bottom: 200px!important;
+} */
 
 .splide__arrow {
 	height: auto;
@@ -1357,10 +1376,7 @@ ul.horizontal li.label {
 	width: auto;
 }
 
-/* Splide */
-.splide__slide {
-	width: 100%
-}
+
 
 /* Progress bar */
 .container-progress-bar {

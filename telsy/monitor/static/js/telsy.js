@@ -1,7 +1,8 @@
 /**************************************************************************************************/
 // Fundación Cardiovascular de Colombia
+// Dirección de Innovación y Desarrollo Tecnológico
 // Proyecto Telsy
-// Telsy Hogar v14.12.2022
+// Telsy Hogar v15.12.2022
 // Ing. Elmer Rocha Jaime
 /**************************************************************************************************/
 /* Global variables  */
@@ -219,7 +220,7 @@ function loadActivities() {
         drag: true,
         wheel: true,
         pagination:false,
-    }).mount();
+      }).mount();
     });
   }
   const iconsList = {
@@ -301,7 +302,7 @@ function loadActivities() {
       newA.href = '#';
       const newDiv = createCustomElement('div','icon my-auto','','');
       const newImg = createCustomElement('img','','','');
-      const newP = createCustomElement('p','labe my-auto','',customizeHour(activities[i]['execution']));
+      const newP = createCustomElement('p','label my-auto','',customizeHour(activities[i]['execution']));
       newImg.src = iconsList[activities[i]['type']];
 
       newDiv.appendChild(newImg);
@@ -445,11 +446,13 @@ if (CURRENT_FRAME == '/data/') {
   const weightData = weightTelsyData.weigth;
   const ecgRecordData = signsData.ECG;
   const signsDate = customizeDate(signsData.createdAt);
+  const weightDate = customizeDate(weightTelsyData.registeredDate);
 
   const allRecordDate = document.getElementsByClassName('record-date');
   for(let i = 0; i < allRecordDate.length; i++) {
     allRecordDate[i].innerHTML = signsDate;
   }
+  document.getElementById('weight-date').innerHTML = weightDate;
   if (spo2Data && (spo2Data > 0) && (spo2Data <= 100)) {
     spo2.innerHTML = spo2Data;
     document.getElementById('spo2-card').className = cardClass;
@@ -488,7 +491,8 @@ if (CURRENT_FRAME == '/data/') {
   }
   if (ecgRecordData && (ecgRecordData.length > 0)) {
     ecg_live_graph = true;
-    ecgLiveWaveGraph(ecgRecordData.split(','), false);
+    ecgLiveData = ecgRecordData.split(',');
+    ecgLiveWaveGraph(false);
     document.getElementById('ecg-wave-card').className = cardEcgClass;
   }
   setTimeout(backHome,60000);//Wait for 1 minute to redirect
@@ -640,7 +644,7 @@ if (CURRENT_FRAME == '/goals/') {
   localStorage.setItem('goals',JSON.stringify(goalsData));
   function putDescription(data,dataId) {
     for (let i=0; i<data.length; i++) {
-      if (data[i].id==dataId) {
+      if (data[i].type==dataId) {
         return data[i].description;
       }
     }
@@ -667,7 +671,7 @@ if (CURRENT_FRAME == '/goalsd/') {
     '/static/images/assistant/assistant-hi-1.png',
   ];
   for (let i=0; i<goalData.length; i++) {
-    if (goalData[i]['id'] == goalId) {
+    if (goalData[i]['type'] == goalId) {
       document.getElementById('goal-description').innerHTML = goalData[i]['detail'];
       document.getElementById('goal-video').href = '/goalsv/?id='+goalId;
       document.getElementById('goals-details-image').src = goalImages[goalId];
@@ -683,7 +687,7 @@ if (CURRENT_FRAME == '/goalsv/') {
   const goalId = parseInt(urlId.get('id'));
   const goalData = JSON.parse(localStorage.getItem('goals'));
   for (let i=0; i<goalData.length; i++) {
-    if (goalData[i]['id'] == goalId) {
+    if (goalData[i]['type'] == goalId) {
       document.getElementById('detail-vid').src = 'https://www.youtube.com/embed/'+goalData[i]['video'].split('=')[1].split('&')[0];
     }
   }
@@ -896,7 +900,7 @@ if (CURRENT_FRAME == '/login/') {
       password: document.getElementById('user-password').value
     };
     $.ajax({
-      url: URI.replace('/api/v1','') + '/auth/signin',
+      url: URI.replace('/api/v1','/auth/signin'),
       method: 'POST',
       dataType: 'json',
       crossDomain: true,
@@ -1193,6 +1197,29 @@ if (CURRENT_FRAME == '/measure/') {
       }
       break;
 
+    case 'gauge':
+      const gauge = document.getElementById('gauge');
+      document.getElementById('measure-title').innerHTML = 'Manómetro';
+      URL += 'gauge';
+      socket = new WebSocket(URL);
+      socket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        if (data.type == 'cuff') {
+          gauge.innerHTML = data.value;
+        } else if (data.type == 'websocket') {
+          websocket = true;
+          gauge.innerHTML = data.value;
+          socket.close();
+        } else {
+          console.log('Websocket error :(');
+          console.log(data);
+        }
+      }
+      socket.onclose = function(e) {
+        setTimeout(backHome,60000);//Wait for 1 minute to redirect
+      }
+      break;
+
     default:
       break;
   }
@@ -1232,7 +1259,7 @@ if (CURRENT_FRAME == '/measure/') {
         window.location.href = '/home/';
       }
     }
-    // postMethod(URI+'/vitalsignrecords',dataToSend,successFunction);
+    postMethod(URI+'/vitalsignrecords',dataToSend,successFunction);
   }
 }
 /**************************************************************************************************/
@@ -1397,6 +1424,9 @@ if (CURRENT_FRAME == '/monitoring/') {
   document.getElementById('person-img').src = signsList[index]['person'];
   document.getElementById('info-button').className = signsList[index]['class'];
   document.getElementById('measure-type').value = signsList[index]['type'];
+  if ((index==1) && (localStorage.getItem('userEmail') == 'soporte@telsy.com')) {
+    document.getElementById('pressure-gauge').classList.remove('visually-hidden');
+  }
   if (unic_measure) {
     document.getElementById('next-button').innerHTML = 'Empezar';
   } else {
@@ -1423,6 +1453,10 @@ if (CURRENT_FRAME == '/monitoring/') {
         window.location.href= '/monitoring/?s='+(index+1)+'&u=0';
       }
     }
+  }
+  function pressureGauge() {
+    document.getElementById('measure-type').value = 'gauge';
+    document.getElementById('start-measuring').submit();
   }
   function infoButton() {
     window.location.href= '/monitoringinfo/?s='+index;
@@ -1684,6 +1718,7 @@ if (CURRENT_FRAME == '/symptoms/') {
 if (CURRENT_FRAME == '/user/') {
   const userData = getMethod(URI+'/users/profile');
   localStorage.setItem('userId', userData.id);
+  localStorage.setItem('userEmail', userData.email);
   document.getElementById('fullname').innerHTML = userData.name + ' ' + userData.lastName;
   document.getElementById('email').innerHTML = 'Correo: ' + userData.email;
   document.getElementById('age').innerHTML = 'Edad: ' + userData.age;
@@ -1694,7 +1729,7 @@ if (CURRENT_FRAME == '/user/') {
 
   const userData2 = getMethod(URI+'/patientgoals/'+userData.id);
   for (let i=0; i<userData2.length; i++) {
-    if (userData2[i].id == 2) {
+    if (userData2[i].type == 2) {
       localStorage.setItem('exerciseTime', userData2[i].minutes);
     }
   }
@@ -1760,7 +1795,7 @@ if (CURRENT_FRAME == '/weightc/') {
         window.location.href = '/home/';
       }
     }
-    postMethod(URI+'/weigthrecords',dataToSend,successFunction());
+    postMethod(URI+'/weigthrecords',dataToSend,successFunction);
   }
   loadActivities();
   setTimeout(sendWeight,10000);//Wait for 10 seconds to redirect

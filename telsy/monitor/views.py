@@ -2,7 +2,7 @@
 Fundación Cardiovascular de Colombia
 Dirección de Innovación y Desarrollo Tecnológico
 Proyecto Telsy
-Telsy Hogar v14.12.2022
+Telsy Hogar v15.12.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -93,6 +93,11 @@ def data(request):
     return render(request, 'data.html')
 
 
+def exercise(request):
+    ''' Exercise view '''
+    return render(request, 'exercise.html')
+
+
 def goals(request):
     ''' Goals view '''
     return render(request, 'goals.html')
@@ -170,6 +175,11 @@ class Measure(View):
         return render(request, 'measure.html', {'measure_type': measure_type})
 
 
+def medicaments(request):
+    ''' Medicaments view '''
+    return render(request, 'medicaments.html')
+
+
 def medicine(request):
     ''' Medicine view '''
     return render(request, 'medicine.html')
@@ -211,6 +221,11 @@ def network(request):
     else:
         networks = ['Red 0', 'Red 1', 'Red 2', 'Red 3', 'Red 4', 'Red 5', 'Red 6', 'Red 7']
     return render(request, 'network.html', {'networks': networks})
+
+
+def symptoms(request):
+    ''' Symptoms view '''
+    return render(request, 'symptoms.html')
 
 
 def user(request):

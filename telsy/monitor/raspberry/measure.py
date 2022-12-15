@@ -2,7 +2,7 @@
 Fundación Cardiovascular de Colombia
 Dirección de Innovación y Desarrollo Tecnológico
 Proyecto Telsy
-Telsy Hogar v14.12.2022
+Telsy Hogar v15.12.2022
 Ing. Elmer Rocha Jaime
 '''
 
@@ -320,6 +320,61 @@ class MonitorConsumer(WebsocketConsumer):
         self.close()
 
 
+class GaugeConsumer(WebsocketConsumer):
+    ''' Gauge Consumer '''
+    def connect(self):
+        if is_raspberry_pi_os():
+            turn_on_board()
+        global serial, buffer_data, measure_flarg
+        print('Gauge Websocket connected :)')
+        self.accept()
+
+        if is_raspberry_pi_os():
+            try:
+                data = 0
+                send_data = False
+                start_time = datetime.now()
+                while measure_flarg:
+                    data_ = data
+                    data = serial.read()
+                    if ((data_ == b'\x01') and (data == b'\x81')):
+                        serial_write(100)
+                        sleep(1)
+                        serial_write(54)
+                        start_time = datetime.now()
+                    # NIBP cuff
+                    elif (data == b'\x20'):
+                        send_data = True
+                        buffer_data = {'type': 'cuff', 'value': serial_read(data)}
+                    # Send data
+                    if send_data:
+                        send_data = False
+                        self.send(dumps(buffer_data))
+                    # 60 seconds measurement stop
+                    current_time = datetime.now() - start_time
+                    if current_time.total_seconds() >= 60:
+                        measure_flarg = False
+                        self.close()
+                        break
+            except KeyboardInterrupt as err:
+                print(err)
+                turn_off_board()
+                self.close()
+            except OSError as err:
+                print(err)
+                turn_off_board()
+                self.close()
+        else:
+            sleep(3)
+            self.send(dumps({'type': 'websocket', 'value': '0'}))
+            print('Gauge Websocket sended default data <3')
+            self.close()
+
+    def disconnect(self, code):
+        if is_raspberry_pi_os():
+            turn_off_board()
+        print('Gauge Websocket disconnected :(')
+        self.close()
 
 
 #### UART methods ####

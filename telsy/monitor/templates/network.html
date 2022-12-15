@@ -53,7 +53,7 @@
 										<div class="row scroll selection network mx-auto">
 											<div class="splide" id="splide-network">
 												<div class="splide__track">
-													<ul class="splide__list" id="network_list">
+													<ul class="splide__list" id="network-list">
 														{% for net in networks %}
 															<li class="splide__slide">
 																<a href="#" onclick="connectToNetwork('{{net}}')" class="col d-flex justify-content-between p-1">
@@ -67,12 +67,12 @@
 													</ul>
 												</div>
 												<div class="splide__arrows">
-													<button class="splide__arrow splide__arrow--prev w-100">
+													<button class="splide__arrow splide__arrow--prev">
 														<div class="btn-scroll up gradient-vertical">
 															<img src="{% static 'images/icons/chevron-up.png' %}">
 														</div>
 													</button>
-													<button class="splide__arrow splide__arrow--next w-100">
+													<button class="splide__arrow splide__arrow--next">
 														<div class="btn-scroll down gradient-vertical">
 															<img src="{% static 'images/icons/chevron-up.png' %}">
 														</div>

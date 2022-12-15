@@ -29,8 +29,8 @@
 						<div class="container-fluid p-0">
 							<div class="row header no-gutters p-0">
 								<div class="col title d-flex flex-row">
-									<div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-data.png' %}"></div>
-									<h1>Monitoreando...</h1>
+									<div class="icon my-auto margin-right-10"><img src="{% static 'images/icons/ico-monitoring.png' %}"></div>
+									<h1 id="measure-title">Monitoreando...</h1>
 								</div>
 								<div class="col-fifth navigation d-flex justify-content-end">
 									<a id="a-button" href="#" class="button button rectangle r120 red d-flex justify-content-between me-5" style="width: auto;" onclick="stopButton()">
@@ -170,7 +170,7 @@
 												<div class="col-4">
 													<div class="d-flex align-items-center">
 														<div class="ico my-auto mt-2">
-															<img src="/static/images/icons/ico-ecg.png">
+															<img src="{% static 'images/icons/ico-ecg.png' %}">
 														</div>
 														<div class="content my-auto margin-left-10 mt-3">
 															<p>Electrocardiograma</p>
@@ -183,16 +183,22 @@
 											</div>
 										</div>
 									{% endif %}
-									<!-- {% if measure_type != 'monitor' %}
-									<div class="col d-flex justify-content-center mt-5 me-4">
-										<a href="#" class="button button rectangle r120 red d-flex justify-content-between" style="width: auto;" onclick="stopButton()">
-											<div class="icon">
-												<img src="{% static 'images/icons/equis-white.png' %}">
+									{% if measure_type == 'gauge' %}
+									<div class="d-flex justify-content-center">
+										<div class="card card-data bor bor-grey bor-med padding-4">
+											<div class="d-flex align-items-center">
+												<div class="ico my-auto">
+													<img  src="{% static 'images/icons/ico-pni.png' %}">
+												</div>
+												<div class="content my-auto margin-left-10">
+													<p>Presión</p>
+													<h2 class="d-inline" id="gauge">...</h2>
+													<p class="d-inline">&nbsp;mmHg</p>
+												</div>
 											</div>
-											<p class="label txt-white">Detener</p>
-										</a>
+										</div>
 									</div>
-									{% endif %} -->
+									{% endif %}
 								</div>
 							</div>
 							<!-- End Inner -->

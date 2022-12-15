@@ -69,27 +69,25 @@
 								<div class="col-fifth">
 									<!-- Sidebar with Task list-->
 									<div class="card sidebar-tasks main-light bor-grey">
-										<!-- Tasks Slide -->
-										<div id="splide-tasks" class="splide">
-											<div class="splide__arrows">
-												<button class="splide__arrow splide__arrow--prev " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-													<div class="btn-scroll up gradient-vertical">
-														<img src="{% static 'images/icons/chevron-up.png' %}">
-													</div>
-												</button>
-												<button class="splide__arrow splide__arrow--next " aria-controls="example-ttb-track" aria-label="Next slide" disabled="">
-													<div class="btn-scroll down gradient-vertical">
-														<img src="{% static 'images/icons/chevron-up.png' %}">
-													</div>
-												</button>
-											</div>
+										<div class="splide" id="splide-tasks">
 											<div class="splide__track">
 												<ul class="splide__list" id="splide-list">
 													<!-- Activities list -->
 												</ul>
 											</div>
+											<div class="splide__arrows">
+												<button class="splide__arrow splide__arrow--prev">
+													<div class="btn-scroll up gradient-vertical">
+														<img src="{% static 'images/icons/chevron-up.png' %}">
+													</div>
+												</button>
+												<button class="splide__arrow splide__arrow--next">
+													<div class="btn-scroll down gradient-vertical">
+														<img src="{% static 'images/icons/chevron-up.png' %}">
+													</div>
+												</button>
+											</div>
 										</div>
-										<!--End Slide Tasks -->
 									</div>
 								</div>
 							</div>
