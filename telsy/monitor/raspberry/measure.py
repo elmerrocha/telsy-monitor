@@ -99,8 +99,6 @@ class Spo2Consumer(WebsocketConsumer):
                         measure_flarg = False
                         self.close()
                         break
-                if is_raspberry_pi_os():
-                    turn_off_board()
                 self.close()
             except KeyboardInterrupt as err:
                 print(err)
@@ -156,8 +154,7 @@ class NibpConsumer(WebsocketConsumer):
                     if send_data:
                         send_data = False
                         self.send(dumps(buffer_data))
-                if is_raspberry_pi_os():
-                    turn_off_board()
+
                 self.close()
             except KeyboardInterrupt as err:
                 print(err)
@@ -223,8 +220,6 @@ class EcgConsumer(WebsocketConsumer):
                         measure_flarg = False
                         self.close()
                         break
-                if is_raspberry_pi_os():
-                    turn_off_board()
                 self.close()
             except KeyboardInterrupt as err:
                 print(err)
@@ -308,8 +303,6 @@ class MonitorConsumer(WebsocketConsumer):
                         measure_flarg = False
                         self.close()
                         break
-                if is_raspberry_pi_os():
-                    turn_off_board()
                 self.close()
             except KeyboardInterrupt as err:
                 print(err)
@@ -368,8 +361,6 @@ class GaugeConsumer(WebsocketConsumer):
                         measure_flarg = False
                         self.close()
                         break
-                if is_raspberry_pi_os():
-                    turn_off_board()
                 self.close()
             except KeyboardInterrupt as err:
                 print(err)
